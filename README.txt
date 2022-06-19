@@ -1,0 +1,1 @@
+TODO: redesign so the sketchContainer size is auto. Set the pixels to have a set size and decide the container and options heights
