@@ -1,2 +1,2 @@
 createSketchBox();
-addPixelBorder();
+//addPixelBorder();

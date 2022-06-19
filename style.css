@@ -75,9 +75,7 @@ h2, h4{
     position:absolute;
 }
 .pixelBorder{
-    /* border:solid;
-    border-width:thin;
-    border-color:#243A73; */
     outline:solid;
     outline-width:1px;
 }
+/*buttons*/

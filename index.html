@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etch-a-Sketch</title>
     <link rel="stylesheet" href="style.css">
-    <script src="sketch_constructor.js" defer></script>
+    <script src="sketch_mechanics.js" defer></script>
     <script src="main.js" defer></script>
 </head>
 
@@ -16,12 +16,17 @@
         <h2>Etch-a-Sketch</h2>
     </header>
     <div id='content'>
-        <div id="sketchOptions"></div>
+        <div id="sketchOptions">
+            
+        </div>
         <div class="filledBorder">
             <div id="sketchContainer"></div>
         </div>
         <div id="contentSpacer"></div>
     </div>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+      </div>
     <footer>
         <h4>by DarxyDev</h4>
     </footer>
