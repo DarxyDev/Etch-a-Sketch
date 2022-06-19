@@ -1,1 +1,1 @@
-TODO: redesign so the sketchContainer size is auto. Set the pixels to have a set size and decide the container and options heights
+TODO: pixels are overlapping. don't know why.

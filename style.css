@@ -38,7 +38,7 @@ h2, h4{
 
 #content{
     display:flex;
-    gap:1vh;
+    gap:1.5vh;
     margin:1vh;
 }
 #contentSpacer, #sketchOptions{
@@ -46,24 +46,38 @@ h2, h4{
 }
 #sketchOptions, #sketchContainer{
     height:75vh;
+}
+#sketchContainer{
+    width:75vh;
+    background-color:#A5BECC;
+    position:relative;
+    margin-top:-0.05vh;
+    margin-left:-0.05vh;
+}
+.filledBorder{
     border:solid;
     border-width:3px;
     margin:-3px;
     border-radius:5px;
-}
-#sketchContainer{
-    width:75vh;
+    background-color:black;
     margin-right:auto;
-    flex-shrink:0;
-    background-color:#A5BECC;
-    position:relative;
 }
 #sketchOptions{
-    margin-left:auto;
     background-color:#243A73;
     flex-shrink:0;
+    border:solid;
+    border-width:3px;
+    margin:-3px;
+    border-radius:5px;
+    margin-left:auto;
 }
 .sketchPixel{
-    background-color:red;
     position:absolute;
+}
+.pixelBorder{
+    /* border:solid;
+    border-width:thin;
+    border-color:#243A73; */
+    outline:solid;
+    outline-width:1px;
 }
