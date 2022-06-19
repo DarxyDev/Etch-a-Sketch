@@ -1,0 +1,69 @@
+.colors{
+    color:#7C3E66;
+    color:#F2EBE9;
+    color:#A5BECC;
+    color:#243A73;
+
+}
+body{
+    height:100vh;
+    padding:0;
+    margin:0;
+    background-color: #F2EBE9;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+header,footer{
+    background-color:#7C3E66;
+    display:flex;
+    width:100%;
+    justify-content:center;
+    align-items:center;
+}
+header{
+    border-radius: 0 0 50px 50px;
+    position:fixed;
+    top:0;
+}
+footer{
+    border-radius: 50px 50px 0 0;
+    position:fixed;
+    bottom:0;
+}
+h2, h4{
+    margin:1vh 1vw;
+}
+
+#content{
+    display:flex;
+    gap:1vh;
+    margin:1vh;
+}
+#contentSpacer, #sketchOptions{
+    width:30vh;
+}
+#sketchOptions, #sketchContainer{
+    height:75vh;
+    border:solid;
+    border-width:3px;
+    margin:-3px;
+    border-radius:5px;
+}
+#sketchContainer{
+    width:75vh;
+    margin-right:auto;
+    flex-shrink:0;
+    background-color:#A5BECC;
+    position:relative;
+}
+#sketchOptions{
+    margin-left:auto;
+    background-color:#243A73;
+    flex-shrink:0;
+}
+.sketchPixel{
+    background-color:red;
+    position:absolute;
+}
