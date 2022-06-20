@@ -145,3 +145,11 @@ h2, h4{
   .sliderText:focus{
     outline:none;
   }
+  /*drawPixel button*/
+  #drawCanvasContainer{
+    width:100%;
+    text-align:center;
+  }
+  #drawCanvasButton{
+    text-align:center;
+  }
