@@ -6,6 +6,8 @@ let sketchSize = sketchSizeX * sketchSizeY;
 let pixelElements = new Array(sketchSize);
 
 //User selected variables
+const MAX_SIZE = 100;
+const MIN_SIZE = 1;
 let pixelColor = 'black';
 let adjustForRoundingError = false;
 
@@ -33,6 +35,32 @@ function addPixelBorder(){
 function removePixelBorder(){
     pixelElements.forEach(element => element.classList.remove('pixelBorder'));
 }
+//options input
+const xSlider = document.getElementById('sliderSizeX');
+const xText = document.getElementById('sliderTextX');
+xText.value = xSlider.value;
+xSlider.oninput = ()=>{xText.value = xSlider.value;}
+xText.oninput = ()=>{setValidSliderInput(xText, xSlider);}
+
+const ySlider = document.getElementById('sliderSizeY');
+const yText = document.getElementById('sliderTextY');
+yText.value = ySlider.value;
+ySlider.oninput = ()=>{yText.value = ySlider.value;}
+yText.oninput = ()=>{setValidSliderInput(yText, ySlider);}
+
+function setValidSliderInput(textElement, sliderElement){
+    if(textElement.value == '') return;
+    let value = parseInt(textElement.value);
+    if(isNaN(value)){
+        textElement.value = sliderElement.value;
+        return;
+    }
+    if(value < MIN_SIZE) value = MIN_SIZE;
+    else if(value > MAX_SIZE) value = MAX_SIZE;
+    textElement.value = `${value}`;
+    sliderElement.value = `${value}`;
+}
+
 //constructor functions
 function pxToVh(px){
     let documentHeight = document.documentElement.offsetHeight || document.documentElement.clientHeight;
