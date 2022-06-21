@@ -16,6 +16,7 @@ const MAX_SIZE = 100;
 const MIN_SIZE = 10;
 //tool names
 const TOOL_DRAW = 'draw';
+const TOOL_FILL = 'fill';
 
 //testing/user variables
 let currentTool = TOOL_DRAW;
@@ -230,3 +231,9 @@ function setDrawCanvasButtonText() {
     }
 }
 //options: xxxx
+
+
+//Initialize
+createSketchBox(); //Had to place in this script. 
+                   ///In main would occasionally not execute despite both scripts deferred.
+                   ///Possibly due to DOM not completely loading before execution.
