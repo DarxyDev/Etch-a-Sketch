@@ -13,7 +13,7 @@ let lockedAspect = true;
 //constants
 const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
-const MIN_SIZE = 1;
+const MIN_SIZE = 10;
 //tool names
 const TOOL_DRAW = 'draw';
 
@@ -43,7 +43,7 @@ function pixelClick(e) {
     }
     e.preventDefault(); //Reminder: This MIGHT cause issues. It did on setBackgroundHover
 }
-//constructor functions
+//render functions
 function pxToVh(px) {
     let documentHeight = document.documentElement.offsetHeight || document.documentElement.clientHeight;
     return px / documentHeight * 100;
@@ -59,8 +59,8 @@ function setPixelAttributes(element, index) {
     let percentSizeY = 100 / sketchSizeY;
     if (adjustForRoundingError) {
         element.style.width = `calc(${percentSizeX}% + 1px)`; //+1px corrects rounding errors using %
-        element.style.height = `calc(${percentSizeY}% + 1px)`;
-    } else {
+        element.style.height = `calc(${percentSizeY}% + 1px)`;///might change to pixel, but would need to
+    } else {                                                  ///adjust pixel size manually on resize
         element.style.width = `${percentSizeX}%`;
         element.style.height = `${percentSizeY}%`;
 
@@ -68,7 +68,7 @@ function setPixelAttributes(element, index) {
     //set position
     element.style.left = `${index % sketchSizeX * percentSizeX}%`;
     element.style.top = `${Math.floor(index / sketchSizeX) * percentSizeY}%`;
-    //add event listeners
+    //set event listeners
     element.addEventListener('mouseover', pixelHover);
     element.addEventListener('mousedown', pixelClick);
     //set background
@@ -106,7 +106,7 @@ function removePixelBorder() {
     pixelElements.forEach(element => element.classList.remove('pixelBorder'));
 }
 
-// options:canvas size
+//options:canvas size
 const xSlider = document.getElementById('sliderSizeX');
 xSlider.max = MAX_SIZE;
 xSlider.min = MIN_SIZE;
@@ -126,12 +126,24 @@ xSlider.oninput = () => {
 }
 xText.oninput = () => {
     setValidSliderInput(xText, xSlider);
-    if (lockedAspect) setAllSliderTextValue(xText.value);
+    if (lockedAspect){ 
+        let value = xText.value;
+        let skipText = false;
+        if(value == '') { //slider was accepting '' as input and setting value to 50%
+            value = MIN_SIZE;
+            skipText = true;
+            yText.value = ''; //looks better with yText also appearing blank
+        }
+         setAllSliderTextValue(value, skipText);
+    }
     sketchSizeX = xSlider.value;
     sketchSizeY = ySlider.value;
     setDrawCanvasButtonText();
 }
-xText.onblur = () => { xText.value = xSlider.value; } //prevents blank box
+xText.onblur = () => {  //prevents invalid value from remaining
+    xText.value = xSlider.value;
+    yText.value = ySlider.value; //prevents invalid value when aspect ratio locked
+}
 
 ySlider.oninput = () => {
     if (lockedAspect) setAllSliderTextValue(ySlider.value);
@@ -142,32 +154,48 @@ ySlider.oninput = () => {
 }
 yText.oninput = () => {
     setValidSliderInput(yText, ySlider);
-    if (lockedAspect) setAllSliderTextValue(yText.value);
+    if (lockedAspect){ 
+        let value = yText.value;
+        let skipText = false;
+        if(value == ''){
+            value = MIN_SIZE;
+            skipText = true;  
+            xText.value = '';
+        } 
+        setAllSliderTextValue(value, skipText);
+    }
     sketchSizeX = xSlider.value;
     sketchSizeY = ySlider.value;
     setDrawCanvasButtonText();
 }
-yText.onblur = () => {
+yText.onblur = () => { //prevents invalid value from remaining
+    xText.value = ySlider.value; //prevents invalid value when aspect ratio locked
     yText.value = ySlider.value;
 }
-
 function setValidSliderInput(textElement, sliderElement) {
-    if (textElement.value == '') return;
-    let value = parseInt(textElement.value);
-    if (isNaN(value)) {
-        textElement.value = sliderElement.value;
+    if (textElement.value == '') {
+        setAllSliderTextValue(MIN_SIZE, true);
         return;
     }
-    if ((value < MIN_SIZE) && (MIN_SIZE < 10)) return; //Allows MIN_SIZE >= 10 to backspace
-    if (value < MIN_SIZE) value = MIN_SIZE;             //  causes minor UI issues. Should keep MIN_SIZE < 10
+    console.log(textElement.value);
+    let value = parseInt(textElement.value);
+    if (isNaN(value)) {
+        textElement.value = MIN_SIZE;
+        sliderElement.value = MIN_SIZE;
+        if (lockedAspect) setAllSliderTextValue(MIN_SIZE);
+        return;
+    }
+    if (value < MIN_SIZE) return;
     else if (value > MAX_SIZE) value = MAX_SIZE;
     textElement.value = `${value}`;
     sliderElement.value = `${value}`;
 }
-function setAllSliderTextValue(value) { //used if aspect ratio locked
-    xText.value = value;
+function setAllSliderTextValue(value, onlySlider = false) { //used if aspect ratio locked
+    if (!onlySlider) {
+        xText.value = value;
+        yText.value = value;
+    }
     xSlider.value = value;
-    yText.value = value;
     ySlider.value = value;
 }
 //options: canvas button

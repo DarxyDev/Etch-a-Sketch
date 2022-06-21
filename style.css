@@ -53,6 +53,7 @@ h2, h4{
     position:relative;
     margin-top:-0.05vh;
     margin-left:-0.05vh;
+    cursor:crosshair;
 }
 .filledBorder{
     border:solid;
@@ -83,6 +84,21 @@ h2, h4{
     outline-width:1px;
 }
 /*buttons*/
+input{
+    font-size:1.5vh;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align:center;
+    background-color:#F2EBE9;
+    border:1px solid black;
+    border-radius:1vmin;
+}
+button{
+    font-size:2vh;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align:center;
+    background-color:#F2EBE9;
+    border-radius:1vmin;
+}
 .buttonText{
     background-color:#A5BECC;
     text-align:center;
@@ -137,10 +153,6 @@ h2, h4{
   }
   .sliderText{
     width:10%;
-    border-radius:30%;
-    text-align:center;
-    font-size:1.5vh;
-    background-color:#F2EBE9
   }
   .sliderText:focus{
     outline:none;
