@@ -15,10 +15,10 @@ const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
 const MIN_SIZE = 1;
 //tool names
-const DRAW = 'draw';
+const TOOL_DRAW = 'draw';
 
 //testing/user variables
-let currentTool = DRAW;
+let currentTool = TOOL_DRAW;
 let pixelColor = 'black';
 let userAdjustRounding = 1.04;
 
@@ -33,11 +33,11 @@ function removeMouseDown(e) {
     mouseDown = false;
 }
 function pixelHover(e) {
-    if (mouseDown && (currentTool == DRAW)) e.target.style.backgroundColor = pixelColor;
+    if (mouseDown && (currentTool == TOOL_DRAW)) e.target.style.backgroundColor = pixelColor;
 }
 function pixelClick(e) {
     switch (currentTool) {
-        case DRAW: e.target.style.backgroundColor = pixelColor;
+        case TOOL_DRAW: e.target.style.backgroundColor = pixelColor;
             break;
         default:
     }
