@@ -14,8 +14,11 @@ let lockedAspect = true;
 const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
 const MIN_SIZE = 1;
+//tool names
+const DRAW = 'draw';
 
 //testing/user variables
+let currentTool = DRAW;
 let pixelColor = 'black';
 let userAdjustRounding = 1.04;
 
@@ -29,11 +32,15 @@ document.addEventListener('mouseup', removeMouseDown);
 function removeMouseDown(e) {
     mouseDown = false;
 }
-function setBackgroundHover(e) {
-    if (mouseDown) e.target.style.backgroundColor = pixelColor;
+function pixelHover(e) {
+    if (mouseDown && (currentTool == DRAW)) e.target.style.backgroundColor = pixelColor;
 }
-function setBackgroundClick(e) {
-    e.target.style.backgroundColor = pixelColor;
+function pixelClick(e) {
+    switch (currentTool) {
+        case DRAW: e.target.style.backgroundColor = pixelColor;
+            break;
+        default:
+    }
     e.preventDefault(); //Reminder: This MIGHT cause issues. It did on setBackgroundHover
 }
 //constructor functions
@@ -50,16 +57,23 @@ function setPixelAttributes(element, index) {
     //set size
     let percentSizeX = 100 / sketchSizeX;
     let percentSizeY = 100 / sketchSizeY;
-    let roundingAdjust = 1;
-    if (adjustForRoundingError) roundingAdjust = userAdjustRounding;
-    element.style.width = `${percentSizeX * roundingAdjust}%`;
-    element.style.height = `${percentSizeY * roundingAdjust}%`;
+    if (adjustForRoundingError) {
+        element.style.width = `calc(${percentSizeX}% + 1px)`; //+1px corrects rounding errors using %
+        element.style.height = `calc(${percentSizeY}% + 1px)`;
+    } else {
+        element.style.width = `${percentSizeX}%`;
+        element.style.height = `${percentSizeY}%`;
+
+    }
     //set position
     element.style.left = `${index % sketchSizeX * percentSizeX}%`;
     element.style.top = `${Math.floor(index / sketchSizeX) * percentSizeY}%`;
     //add event listeners
-    element.addEventListener('mouseover', setBackgroundHover);
-    element.addEventListener('mousedown', setBackgroundClick);
+    element.addEventListener('mouseover', pixelHover);
+    element.addEventListener('mousedown', pixelClick);
+    //set background
+    element.style.backgroundColor = DEFAULT_PIXEL_BG;
+
 }
 function createPixelElement(index = 0) {
     let pElement = document.createElement('div');
@@ -144,8 +158,8 @@ function setValidSliderInput(textElement, sliderElement) {
         textElement.value = sliderElement.value;
         return;
     }
-    if ((value < MIN_SIZE)&&(MIN_SIZE < 10)) return; //Allows MIN_SIZE >= 10 to backspace
-    if(value<MIN_SIZE) value = MIN_SIZE;             //  causes minor UI issues. Should keep MIN_SIZE < 10
+    if ((value < MIN_SIZE) && (MIN_SIZE < 10)) return; //Allows MIN_SIZE >= 10 to backspace
+    if (value < MIN_SIZE) value = MIN_SIZE;             //  causes minor UI issues. Should keep MIN_SIZE < 10
     else if (value > MAX_SIZE) value = MAX_SIZE;
     textElement.value = `${value}`;
     sliderElement.value = `${value}`;
@@ -182,7 +196,7 @@ function setDrawCanvasButtonText() {
         drawCanvasButton.textContent = 'Clear Canvas';
         canvasClear = true;
     }
-    else{
+    else {
         drawCanvasButton.textContent = `Render ${xSlider.value} x ${ySlider.value} Canvas`;
         canvasClear = false;
     }
