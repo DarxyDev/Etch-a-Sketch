@@ -2,6 +2,8 @@
 let sketchContainer = document.getElementById('sketchContainer');
 let sketchSizeX = 30;
 let sketchSizeY = 30;
+let renderedX = 30;
+let renderedY = 30;
 let pixelElements = new Array(sketchSizeX * sketchSizeY);
 //flags
 let canvasClear = true;
@@ -10,8 +12,8 @@ let adjustForRoundingError = true;
 let lockedAspect = true;
 //constants
 const DEFAULT_PIXEL_BG = '';
-const MAX_SIZE = 200;
-const MIN_SIZE = 10;
+const MAX_SIZE = 100;
+const MIN_SIZE = 1;
 
 //testing/user variables
 let pixelColor = 'black';
@@ -78,6 +80,8 @@ function createSketchBox(size = sketchSizeX * sketchSizeY) {
         sketchContainer.appendChild(pixelElement);
         setPixelAttributes(pixelElement, i);
     }
+    renderedX = sketchSizeX;
+    renderedY = sketchSizeY;
 }
 //options input
 //options misc functions
@@ -140,7 +144,8 @@ function setValidSliderInput(textElement, sliderElement) {
         textElement.value = sliderElement.value;
         return;
     }
-    if (value < MIN_SIZE) value = MIN_SIZE;
+    if ((value < MIN_SIZE)&&(MIN_SIZE < 10)) return; //Allows MIN_SIZE >= 10 to backspace
+    if(value<MIN_SIZE) value = MIN_SIZE;             //  causes minor UI issues. Should keep MIN_SIZE < 10
     else if (value > MAX_SIZE) value = MAX_SIZE;
     textElement.value = `${value}`;
     sliderElement.value = `${value}`;
@@ -168,13 +173,18 @@ drawCanvasButton.onclick = () => {
             createSketchBox();
             rendering = false;
             drawCanvasButton.innerText = 'Clear Canvas';
-        },1);
+        }, 1);
         canvasClear = true;
     }
 }
 function setDrawCanvasButtonText() {
-    canvasClear = false;
-    drawCanvasButton.innerText = `Render ${xSlider.value} x ${ySlider.value} Canvas`;
-    drawCanvasButton.style.opacity = 1;
+    if ((renderedX == sketchSizeX) && (renderedY == sketchSizeY)) {
+        drawCanvasButton.textContent = 'Clear Canvas';
+        canvasClear = true;
+    }
+    else{
+        drawCanvasButton.textContent = `Render ${xSlider.value} x ${ySlider.value} Canvas`;
+        canvasClear = false;
+    }
 }
 //options: xxxx
