@@ -230,10 +230,13 @@ function setDrawCanvasButtonText() {
         canvasClear = false;
     }
 }
-//options: xxxx
-
-
-//Initialize
-createSketchBox(); //Had to place in this script. 
-                   ///In main would occasionally not execute despite both scripts deferred.
-                   ///Possibly due to DOM not completely loading before execution.
+//options: tools
+const toolMainElement = document.getElementById('toolMain');
+let toolButtons = document.getElementById('toolDropDownMenu').getElementsByClassName('dropDownItem');
+for(let i = 0; i < toolButtons.length; i++){
+    let element = toolButtons.item(i)
+    element.addEventListener('click', ()=>{
+        toolMainElement.innerText = element.innerText;
+        currentTool = eval(`TOOL_${element.innerText}`.toUpperCase());
+    })
+}
