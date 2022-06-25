@@ -5,6 +5,8 @@ let sketchSizeY = 30;
 let renderedX = 30;
 let renderedY = 30;
 let pixelElements = new Array(sketchSizeX * sketchSizeY);
+let pixelColors = new Array(sketchSizeX * sketchSizeY);
+setArrayAll(pixelColors);
 //flags
 let canvasClear = true;
 let rendering = false;
@@ -20,7 +22,7 @@ const TOOL_FILL = 'fill';
 
 //testing/user variables
 let currentTool = TOOL_DRAW;
-let pixelColor = 'black';
+let pixelColor = '#000000';
 let userAdjustRounding = 1.04;
 
 //event functions
@@ -34,11 +36,20 @@ function removeMouseDown(e) {
     mouseDown = false;
 }
 function pixelHover(e) {
-    if (mouseDown && (currentTool == TOOL_DRAW)) e.target.style.backgroundColor = pixelColor;
+    if (mouseDown && (currentTool == TOOL_DRAW)) {
+        e.target.style.backgroundColor = pixelColor;
+        let index = parseInt(e.target.id.slice(6));
+        pixelColors[index] = pixelColor;
+    }
 }
 function pixelClick(e) {
     switch (currentTool) {
-        case TOOL_DRAW: e.target.style.backgroundColor = pixelColor;
+        case TOOL_DRAW: 
+            e.target.style.backgroundColor = pixelColor;
+            break;
+        case TOOL_FILL:
+            console.log('algorithm here. use pixelColors');
+            console.log(pixelColors[parseInt(e.target.id.slice(6))]);
             break;
         default:
     }
@@ -74,6 +85,8 @@ function setPixelAttributes(element, index) {
     element.addEventListener('mousedown', pixelClick);
     //set background
     element.style.backgroundColor = DEFAULT_PIXEL_BG;
+    //set id
+    element.setAttribute('id', `pixel-${index}`);
 
 }
 function createPixelElement(index = 0) {
@@ -87,6 +100,8 @@ function removeSketchBox() {
 }
 function createSketchBox(size = sketchSizeX * sketchSizeY) {
     removeSketchBox();
+    pixelColors = new Array(size);
+    setArrayAll(pixelColors);
     resizeSketchContainerX();
     if (pixelElements != undefined) pixelElements.forEach(element => element.remove())
     for (let i = 0; i < size; i++) {
@@ -97,6 +112,9 @@ function createSketchBox(size = sketchSizeX * sketchSizeY) {
     }
     renderedX = sketchSizeX;
     renderedY = sketchSizeY;
+}
+function setArrayAll(arr, element = 0) {
+    for (let i = 0; i < arr.length; i++) arr[i] = element;
 }
 //options input
 //options misc functions
@@ -127,15 +145,15 @@ xSlider.oninput = () => {
 }
 xText.oninput = () => {
     setValidSliderInput(xText, xSlider);
-    if (lockedAspect){ 
+    if (lockedAspect) {
         let value = xText.value;
         let skipText = false;
-        if(value == '') { //slider was accepting '' as input and setting value to 50%
+        if (value == '') { //slider was accepting '' as input and setting value to 50%
             value = MIN_SIZE;
             skipText = true;
             yText.value = ''; //looks better with yText also appearing blank
         }
-         setAllSliderTextValue(value, skipText);
+        setAllSliderTextValue(value, skipText);
     }
     sketchSizeX = xSlider.value;
     sketchSizeY = ySlider.value;
@@ -155,14 +173,14 @@ ySlider.oninput = () => {
 }
 yText.oninput = () => {
     setValidSliderInput(yText, ySlider);
-    if (lockedAspect){ 
+    if (lockedAspect) {
         let value = yText.value;
         let skipText = false;
-        if(value == ''){
+        if (value == '') {
             value = MIN_SIZE;
-            skipText = true;  
+            skipText = true;
             xText.value = '';
-        } 
+        }
         setAllSliderTextValue(value, skipText);
     }
     sketchSizeX = xSlider.value;
@@ -233,10 +251,19 @@ function setDrawCanvasButtonText() {
 //options: tools
 const toolMainElement = document.getElementById('toolMain');
 let toolButtons = document.getElementById('toolDropDownMenu').getElementsByClassName('dropDownItem');
-for(let i = 0; i < toolButtons.length; i++){
+for (let i = 0; i < toolButtons.length; i++) {
     let element = toolButtons.item(i)
-    element.addEventListener('click', ()=>{
+    element.addEventListener('click', () => {
         toolMainElement.innerText = element.innerText;
         currentTool = eval(`TOOL_${element.innerText}`.toUpperCase());
+        switch (currentTool) {
+            case TOOL_DRAW:
+                sketchContainer.style.cursor = 'crosshair';
+                break;
+            case TOOL_FILL:
+                sketchContainer.style.cursor = 'cell';
+                break;
+            default: ;
+        }
     })
 }
