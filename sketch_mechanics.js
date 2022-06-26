@@ -2,8 +2,8 @@
 let sketchContainer = document.getElementById('sketchContainer');
 let sketchSizeX = 30;
 let sketchSizeY = 30;
-let renderedX = 30;
-let renderedY = 30;
+let renderedX = 1;
+let renderedY = 1;
 let pixelElements = new Array(sketchSizeX * sketchSizeY);
 let pixelColors = new Array(sketchSizeX * sketchSizeY);
 setArrayAll(pixelColors);
@@ -44,7 +44,7 @@ function pixelHover(e) {
 }
 function pixelClick(e) {
     switch (currentTool) {
-        case TOOL_DRAW: 
+        case TOOL_DRAW:
             e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
@@ -217,6 +217,54 @@ function setAllSliderTextValue(value, onlySlider = false) { //used if aspect rat
     xSlider.value = value;
     ySlider.value = value;
 }
+//options: resetSlider
+document.getElementById('sliderResetX').addEventListener('click', resetSliderX);
+document.getElementById('sliderResetY').addEventListener('click', resetSliderY);
+function resetSliderX() {
+    if (lockedAspect) {
+        setAllSliderTextValue(renderedX);
+        sketchSizeY = renderedY;
+    }
+    else {
+        xSlider.value = renderedX;
+        xText.value = renderedX;
+    }
+    sketchSizeX = renderedX;
+    setDrawCanvasButtonText();
+}
+function resetSliderY() {
+    if (lockedAspect) {
+        setAllSliderTextValue(renderedX);
+        sketchSizeX = renderedX;
+    }
+    else {
+        ySlider.value = renderedY;
+        yText.value = renderedY;
+        sketchSizeY = renderedY;
+    }
+    sketchSizeY = renderedY;
+    setDrawCanvasButtonText();
+}
+//options: lock aspect ratio button
+const aspectRatioSwitch = document.getElementById('aspectRatioSwitch');
+aspectRatioSwitch.addEventListener('click', () => {
+    lockedAspect = !lockedAspect;
+    if (lockedAspect) {
+        aspectRatioSwitch.innerText = 'Locked';
+        aspectRatioSwitch.classList.add('pressedBoxShadow');
+    }
+    else {
+        aspectRatioSwitch.innerText = 'Unlocked';
+        aspectRatioSwitch.style.opacity = '1';
+        aspectRatioSwitch.classList.remove('pressedBoxShadow');
+    }
+});
+aspectRatioSwitch.addEventListener('mouseover', ()=>{ //fix for css hover event not triggering after event listener added
+    aspectRatioSwitch.style.opacity = '.7';           ///likely due to event.preventDefault() 
+})
+aspectRatioSwitch.addEventListener('mouseleave',()=>{
+    aspectRatioSwitch.style.opacity = '1';
+});
 //options: canvas button
 const drawCanvasButton = document.getElementById('drawCanvasButton');
 function clearCanvas() {
@@ -266,4 +314,22 @@ for (let i = 0; i < toolButtons.length; i++) {
             default: ;
         }
     })
+}
+//options: color select
+const colorSelectButton = document.getElementById('colorSelectButton');
+const colorSelectInput = document.getElementById('colorSelectInput');
+console.log('preventdefault messin with this..');
+colorSelectInput.onblur = ()=>{
+    pixelColor = colorSelectInput.value;
+};
+//page init
+async function initPage(){
+    if(sketchContainer.offsetHeight == 0){
+        console.log('Error: sketchContainer not loaded in DOM. Retrying in 20ms.');
+        setTimeout(initPage, 20);
+    }
+    else{
+        createSketchBox();
+setDrawCanvasButtonText();
+    }
 }

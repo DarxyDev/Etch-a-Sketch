@@ -1,6 +1,5 @@
 TODO: 
 -add color selection next to Tools
 -add fill function
--add aspect ratio lock button
 -add undo/redo
--add reset sliders circle next to sliders : ⎌ ↩
+fix: sketchContainer sometimes sets width to 0vh on page load

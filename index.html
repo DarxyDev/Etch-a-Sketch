@@ -20,6 +20,7 @@
             <div>
                 <div class='buttonText'>Horozontal Size</div>
                 <div class='sliderContainer'>
+                    <div class=' sliderReset optionsButton' id='sliderResetX'>↩</div>
                     <input type='range' max='100' min='1' value='30' class='slider' id='sliderSizeX'>
                     <input type="text" class="sliderText" id="sliderTextX">
                 </div>
@@ -27,22 +28,34 @@
             <div>
                 <div class='buttonText'>Vertical Size</div>
                 <div class='sliderContainer'>
+                    <div class='sliderReset optionsButton' id='sliderResetY'>↩</div>
                     <input type='range' max='100' min='1' value='30' class='slider' id='sliderSizeY'>
                     <input type="text" class="sliderText" id="sliderTextY">
                 </div>
             </div>
             <div class='optionsButtonContainer'>
+                <div class='buttonText'>Aspect Ratio</div>
+                <div class='optionsSwitchContainer'>
+                    <div class='optionsSwitch optionsButton pressedBoxShadow' id='aspectRatioSwitch'>Locked</div>
+                </div>
+            </div>
+            <div class='optionsButtonContainer'>
                 <div class='buttonText'>Clear/Render</div>
-                <button id="drawCanvasButton" class='optionsButton'>Clear Canvas</button>
+                <button id="drawCanvasButton" class='optionsButton'>Render 30 x 30 Canvas</button>
             </div>
             <div>
-                <div class='buttonText'>Tools</div>
-                <div class='dropDownContainer'>
-                    <div class="dropDownMenu" id='toolDropDownMenu'>
-                        <div class="dropDownMain" id='toolMain'>Draw</div>
-                        <div class='dropDownItemContainer'>
-                            <div class='dropDownItem'>Draw</div>
-                            <div class='dropDownItem'>Fill</div>
+                <div class='buttonText' alt = 'Color Select'>Drawing Tools</div>
+                <div class = 'drawToolsContainer'>
+                    <div id = 'colorSelectButton' class = 'optionsButton'>
+                        <input type="color" id = 'colorSelectInput' class = 'colorInput'>
+                    </div>
+                    <div class='dropDownContainer'>
+                        <div class="dropDownMenu" id='toolDropDownMenu'>
+                            <div class="dropDownMain" id='toolMain'>Draw</div>
+                            <div class='dropDownItemContainer'>
+                                <div class='dropDownItem'>Draw</div>
+                                <div class='dropDownItem'>Fill</div>
+                            </div>
                         </div>
                     </div>
                 </div>

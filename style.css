@@ -105,9 +105,9 @@ input {
     font-size: 1.5vh;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-align: center;
-    background-color: #F2EBE9;
+    /* background-color: #F2EBE9;
     border: 1px solid black;
-    border-radius: 1vmin;
+    border-radius: 1vmin; */
 }
 
 button {
@@ -130,7 +130,7 @@ button {
     -webkit-appearance: none;
     /* Override default CSS styles */
     appearance: none;
-    width: 75%;
+    width: 70%;
     height: 1vh;
     background: #A5BECC;
     opacity: 0.7;
@@ -184,6 +184,39 @@ button {
     outline: none;
 }
 
+.sliderReset{
+    background-color:#F2EBE9;
+    border-radius:100%;
+    height:2vh;
+    width:2vh;
+    outline:solid;
+    outline-width:2px;
+    font-size:2vh;
+    user-select: none;
+}
+
+/*switch*/
+.optionsSwitchContainer{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.optionsSwitch{
+    background-color:#F2EBE9;
+    font-size:2vh;
+    outline:solid;
+    outline-width:2px;
+    border-radius:1vmin;
+    padding:.25vh 1vh;
+    user-select:none;
+    width:fit-content;
+}
+.pressedBoxShadow{
+    -webkit-box-shadow: inset 0px 0px 1vh #243A73;
+    -moz-box-shadow: inset 0px 0px 1vh #243A73;
+         box-shadow: inset 0px 0px 1vh #243A73;
+}
 /*drawPixel button*/
 .optionsButtonContainer {
     width: 100%;
@@ -193,12 +226,39 @@ button {
 .optionsButton {
     text-align: center;
     cursor:pointer;
+    user-select:none;
+    transition:opacity .2s;
 }
 .optionsButton:hover{opacity:.7;}
 
-/* DropDown Menu */
+/* Drawing tools*/
+.drawToolsContainer{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap:2vh;
+}
+/*Color Select*/
+#colorSelectButton{
+    width:3vh;
+    height:3vh;
+    overflow:hidden;
+    border:solid;
+    border-width: 2px;
+    background-color:#000000;
+    border-radius:1vmin;
+}
+.colorInput{
+    position:relative;
+    bottom:2vh;
+    right:8vh;
+    height:20vh;
+    width:20vh;
+    cursor: pointer;
+    background-color:black;
+}
+/* dropDown Tools Menu */
 .dropDownContainer{
-    width:100%;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -212,6 +272,7 @@ button {
     outline-width:2px;
     border-radius:1vmin;
     cursor: pointer;
+    font-size:2vh;
 }
 .dropDownMenu .dropDownMain:after{content: " ▼"; float:right;}
 .dropDownItemContainer{
@@ -241,3 +302,4 @@ button {
     opacity:.7;
 }
 .dropDownMain:hover{opacity:.7;}
+
