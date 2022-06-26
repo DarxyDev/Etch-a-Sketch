@@ -6,6 +6,7 @@ let renderedX = 1;
 let renderedY = 1;
 let pixelElements = new Array(sketchSizeX * sketchSizeY);
 let pixelColors = new Array(sketchSizeX * sketchSizeY);
+let colorFocus = false;
 setArrayAll(pixelColors);
 //flags
 let canvasClear = true;
@@ -43,6 +44,7 @@ function pixelHover(e) {
     }
 }
 function pixelClick(e) {
+    if (colorFocus) return; //prevents click while color menu open
     switch (currentTool) {
         case TOOL_DRAW:
             e.target.style.backgroundColor = pixelColor;
@@ -53,7 +55,9 @@ function pixelClick(e) {
             break;
         default:
     }
-    e.preventDefault(); //Reminder: This MIGHT cause issues. It did on setBackgroundHover
+}
+function getPixelIndex(pixel) {
+    return parseInt(pixel.id.slice(6))
 }
 //render functions
 function pxToVh(px) {
@@ -259,10 +263,10 @@ aspectRatioSwitch.addEventListener('click', () => {
         aspectRatioSwitch.classList.remove('pressedBoxShadow');
     }
 });
-aspectRatioSwitch.addEventListener('mouseover', ()=>{ //fix for css hover event not triggering after event listener added
+aspectRatioSwitch.addEventListener('mouseover', () => { //fix for css hover event not triggering after event listener added
     aspectRatioSwitch.style.opacity = '.7';           ///likely due to event.preventDefault() 
 })
-aspectRatioSwitch.addEventListener('mouseleave',()=>{
+aspectRatioSwitch.addEventListener('mouseleave', () => {
     aspectRatioSwitch.style.opacity = '1';
 });
 //options: canvas button
@@ -318,18 +322,33 @@ for (let i = 0; i < toolButtons.length; i++) {
 //options: color select
 const colorSelectButton = document.getElementById('colorSelectButton');
 const colorSelectInput = document.getElementById('colorSelectInput');
-console.log('preventdefault messin with this..');
-colorSelectInput.onblur = ()=>{
+colorSelectInput.onclick = () => { colorFocus = true; };
+colorSelectInput.onblur = () => {
+    colorFocus = false;
     pixelColor = colorSelectInput.value;
 };
+//undo
+let actionArray = new Array();
+let undoArray = new Array();
+let currentAction = new Array();
+function createAction(pixelIndex, previousColor, newColor){
+    return [pixelIndex, previousColor, newColor];
+}
+function addAction(action) {
+    if ((action == undefined) || action.length == 0) return console.log('action undefined');
+    actionArray.push(action);
+}
+function popAction() {
+    undoArray.push(actionArray.pop());
+}
 //page init
-async function initPage(){
-    if(sketchContainer.offsetHeight == 0){
+async function initPage() {
+    if (sketchContainer.offsetHeight == 0) {
         console.log('Error: sketchContainer not loaded in DOM. Retrying in 20ms.');
         setTimeout(initPage, 20);
     }
-    else{
+    else {
         createSketchBox();
-setDrawCanvasButtonText();
+        setDrawCanvasButtonText();
     }
 }

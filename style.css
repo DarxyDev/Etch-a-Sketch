@@ -66,6 +66,7 @@ h4 {
     margin-top: -0.05vh;
     margin-left: -0.05vh;
     cursor: crosshair;
+    user-select:none;
 }
 
 .filledBorder {
