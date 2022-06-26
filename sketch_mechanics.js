@@ -5,9 +5,7 @@ let sketchSizeY = 30;
 let renderedX = 1;
 let renderedY = 1;
 let pixelElements = new Array(sketchSizeX * sketchSizeY);
-let pixelColors = new Array(sketchSizeX * sketchSizeY);
 let colorFocus = false;
-setArrayAll(pixelColors);
 //flags
 let canvasClear = true;
 let rendering = false;
@@ -31,27 +29,29 @@ document.addEventListener('mousedown', setMouseDown);
 let mouseDown = false;
 function setMouseDown(e) {
     mouseDown = true;
+    currentAction = new Array();
 }
 document.addEventListener('mouseup', removeMouseDown);
 function removeMouseDown(e) {
     mouseDown = false;
+    if (currentAction.length > 0) pushAction(currentAction);
 }
 function pixelHover(e) {
     if (mouseDown && (currentTool == TOOL_DRAW)) {
+        let index = getPixelIndex(e.target);
+        pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
         e.target.style.backgroundColor = pixelColor;
-        let index = parseInt(e.target.id.slice(6));
-        pixelColors[index] = pixelColor;
     }
 }
 function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
     switch (currentTool) {
         case TOOL_DRAW:
+            pushAction(createAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor));
             e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
-            console.log('algorithm here. use pixelColors');
-            console.log(pixelColors[parseInt(e.target.id.slice(6))]);
+            console.log('algorithm here.');
             break;
         default:
     }
@@ -103,9 +103,8 @@ function removeSketchBox() {
     pixelElements = new Array(sketchSizeX * sketchSizeY);
 }
 function createSketchBox(size = sketchSizeX * sketchSizeY) {
+    resetVariables();
     removeSketchBox();
-    pixelColors = new Array(size);
-    setArrayAll(pixelColors);
     resizeSketchContainerX();
     if (pixelElements != undefined) pixelElements.forEach(element => element.remove())
     for (let i = 0; i < size; i++) {
@@ -273,6 +272,7 @@ aspectRatioSwitch.addEventListener('mouseleave', () => {
 const drawCanvasButton = document.getElementById('drawCanvasButton');
 function clearCanvas() {
     pixelElements.forEach(element => element.style.backgroundColor = DEFAULT_PIXEL_BG);
+    resetVariables();
 }
 drawCanvasButton.onclick = () => {
     if (rendering) return;
@@ -327,21 +327,68 @@ colorSelectInput.onblur = () => {
     colorFocus = false;
     pixelColor = colorSelectInput.value;
 };
-//undo
+//undo + redo actions
 let actionArray = new Array();
 let undoArray = new Array();
 let currentAction = new Array();
-function createAction(pixelIndex, previousColor, newColor){
+
+function createAction(pixelIndex, previousColor, newColor) {
     return [pixelIndex, previousColor, newColor];
 }
-function addAction(action) {
+function pushCurrentAction(pixelIndex, previousColor, newColor) {
+    currentAction.push(createAction(pixelIndex, previousColor, newColor));
+}
+function pushAction(action) {
     if ((action == undefined) || action.length == 0) return console.log('action undefined');
     actionArray.push(action);
+    return console.log(`push:\n${action}`);
 }
 function popAction() {
-    undoArray.push(actionArray.pop());
+    let action = actionArray.pop();
+    undoArray.push(action);
+    return action;
+}
+function popUndoAction(){
+    let action = undoArray.pop();
+    actionArray.push(action);
+    return action;
+}
+function undoAction() {
+    if (actionArray.length <= 0) return;
+    let action = popAction();
+    if (typeof (action[0]) == 'object') {
+        for (let i = action.length - 1; i >= 0; i--) { //faster than array.reverse().forEach()
+            let element = action[i];
+            let pixel = pixelElements[element[0]];
+            pixel.style.backgroundColor = element[1];
+        }
+    }
+    else {
+        pixel = pixelElements[action[0]];
+        pixel.style.backgroundColor = action[1];
+    }
+}
+function redoAction() {
+    if(undoArray.length <= 0) return;
+    let action = popUndoAction();
+    if (typeof (action[0]) == 'object') {
+        for (let i = action.length - 1; i >= 0; i--) { //faster than array.reverse().forEach()
+            let element = action[i];
+            let pixel = pixelElements[element[0]];
+            pixel.style.backgroundColor = element[2];
+        }
+    }
+    else {
+        pixel = pixelElements[action[0]];
+        pixel.style.backgroundColor = action[2];
+    }
 }
 //page init
+function resetVariables(){
+    actionArray = new Array();
+    undoArray = new Array();
+    currentAction = new Array();
+}
 async function initPage() {
     if (sketchContainer.offsetHeight == 0) {
         console.log('Error: sketchContainer not loaded in DOM. Retrying in 20ms.');
