@@ -76,8 +76,10 @@ function setPixelAttributes(element, index) {
     let percentSizeX = 100 / sketchSizeX;
     let percentSizeY = 100 / sketchSizeY;
     if (adjustForRoundingError) {
-        element.style.width = `calc(${percentSizeX}% + 1px)`; //+1px corrects rounding errors using %
-        element.style.height = `calc(${percentSizeY}% + 1px)`;///might change to pixel, but would need to
+        if(onRightBorder(index))element.style.width = `${percentSizeX}%`;
+        else element.style.width = `calc(${percentSizeX}% + 1px)`; //+1px corrects rounding errors using %
+        if(onBottomBorder(index))element.style.height = `${percentSizeY}%`;
+        else element.style.height = `calc(${percentSizeY}% + 1px)`;///might change to pixel, but would need to
     } else {                                                  ///adjust pixel size manually on resize
         element.style.width = `${percentSizeX}%`;
         element.style.height = `${percentSizeY}%`;
@@ -93,11 +95,22 @@ function setPixelAttributes(element, index) {
     element.style.backgroundColor = DEFAULT_PIXEL_BG;
     //set id
     element.setAttribute('id', `pixel-${index}`);
-
+    //add class(es)
+    element.classList.add('sketchPixel');
+}
+function onRightBorder(index){
+    index++;
+    if (index % sketchSizeX == 0) return true;
+    return false;
+}
+function onBottomBorder(index){
+    index++;
+    if (index > (sketchSizeX * (sketchSizeY - 1))) return true;
+    return false;
 }
 function createPixelElement(index = 0) {
     let pElement = document.createElement('div');
-    pElement.classList.add('sketchPixel');
+    // pElement.classList.add('sketchPixel');
     return pElement;
 }
 function removeSketchBox() {
@@ -338,7 +351,7 @@ function createAction(pixelIndex, previousColor, newColor) {
     return [pixelIndex, previousColor, newColor];
 }
 function pushCurrentAction(pixelIndex, previousColor, newColor) {
-    let action = createAction(pixelIndex, previousColor, newColor); 
+    let action = createAction(pixelIndex, previousColor, newColor);
     currentAction.push(action);
     undoArray = new Array(); //prevents out of order redos
 }
@@ -351,7 +364,7 @@ function popAction() {
     undoArray.push(action);
     return action;
 }
-function popUndoAction(){
+function popUndoAction() {
     let action = undoArray.pop();
     actionArray.push(action);
     return action;
@@ -372,7 +385,7 @@ function undoAction() {
     }
 }
 function redoAction() {
-    if(undoArray.length <= 0) return;
+    if (undoArray.length <= 0) return;
     let action = popUndoAction();
     if (typeof (action[0]) == 'object') {
         for (let i = action.length - 1; i >= 0; i--) { //faster than array.reverse().forEach()
@@ -389,14 +402,14 @@ function redoAction() {
 //undo + redo buttons
 const undoButton = document.getElementById('undoButton');
 const redoButton = document.getElementById('redoButton');
-undoButton.addEventListener('click', ()=>{
+undoButton.addEventListener('click', () => {
     undoAction();
 })
-redoButton.addEventListener('click', ()=>{
+redoButton.addEventListener('click', () => {
     redoAction();
 })
 //page init
-function resetVariables(){
+function resetVariables() {
     actionArray = new Array();
     undoArray = new Array();
     currentAction = new Array();

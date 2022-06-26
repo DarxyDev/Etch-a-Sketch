@@ -95,7 +95,6 @@ h4 {
 .sketchPixel {
     position: absolute;
 }
-
 .pixelBorder {
     outline: solid;
     outline-width: 1px;
@@ -106,9 +105,6 @@ input {
     font-size: 1.5vh;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-align: center;
-    /* background-color: #F2EBE9;
-    border: 1px solid black;
-    border-radius: 1vmin; */
 }
 
 button {
