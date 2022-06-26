@@ -29,12 +29,14 @@ document.addEventListener('mousedown', setMouseDown);
 let mouseDown = false;
 function setMouseDown(e) {
     mouseDown = true;
-    currentAction = new Array();
 }
 document.addEventListener('mouseup', removeMouseDown);
 function removeMouseDown(e) {
     mouseDown = false;
-    if (currentAction.length > 0) pushAction(currentAction);
+    if (currentAction.length > 0) {
+        pushAction(currentAction);
+        currentAction = new Array();
+    }
 }
 function pixelHover(e) {
     if (mouseDown && (currentTool == TOOL_DRAW)) {
@@ -47,7 +49,7 @@ function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
     switch (currentTool) {
         case TOOL_DRAW:
-            pushAction(createAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor));
+            pushCurrentAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor);
             e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
@@ -336,12 +338,13 @@ function createAction(pixelIndex, previousColor, newColor) {
     return [pixelIndex, previousColor, newColor];
 }
 function pushCurrentAction(pixelIndex, previousColor, newColor) {
-    currentAction.push(createAction(pixelIndex, previousColor, newColor));
+    let action = createAction(pixelIndex, previousColor, newColor); 
+    currentAction.push(action);
+    undoArray = new Array(); //prevents out of order redos
 }
 function pushAction(action) {
     if ((action == undefined) || action.length == 0) return console.log('action undefined');
     actionArray.push(action);
-    return console.log(`push:\n${action}`);
 }
 function popAction() {
     let action = actionArray.pop();
@@ -383,6 +386,15 @@ function redoAction() {
         pixel.style.backgroundColor = action[2];
     }
 }
+//undo + redo buttons
+const undoButton = document.getElementById('undoButton');
+const redoButton = document.getElementById('redoButton');
+undoButton.addEventListener('click', ()=>{
+    undoAction();
+})
+redoButton.addEventListener('click', ()=>{
+    redoAction();
+})
 //page init
 function resetVariables(){
     actionArray = new Array();

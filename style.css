@@ -238,6 +238,7 @@ button {
     justify-content: center;
     align-items: center;
     gap:2vh;
+    padding-bottom:1vh;
 }
 /*Color Select*/
 #colorSelectButton{
