@@ -53,10 +53,68 @@ function pixelClick(e) {
             e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
-            console.log('algorithm here.');
+            fillPixels(e.target);
             break;
         default:
     }
+}
+console.log('fill very slow, causes errors');
+let fillColorTarget = '';
+function fillPixels(element){
+    fillColorTarget = element.style.backgroundColor;
+    console.log(fillColorTarget);
+    console.log(pixelColor);
+    if(fillColorTarget == (hexToRGB(pixelColor))) return console.log('cancel');
+    fillPixelsSpread(getPixelIndex(element));
+}
+function hexToRGB(hex = '#ff3456'){
+    let r = hex.slice(1,3);
+    let g = hex.slice(3,5);
+    let b = hex.slice(5,7);
+    r = parseInt(r, 16);
+    g = parseInt(g, 16);
+    b = parseInt(b, 16);
+    return `rgb(${r}, ${g}, ${b})`;
+}
+console.log(hexToRGB());
+function fillPixelsSpread(index){
+    if(index === false) return;
+    console.log('i ' + index);
+    if(pixelElements[index].style.backgroundColor == fillColorTarget)setPixelBG(index);
+    else return;
+    fillPixelsSpread(getDirectionIndex(index, UP));
+    fillPixelsSpread(getDirectionIndex(index, DOWN));
+    fillPixelsSpread(getDirectionIndex(index, LEFT));
+    fillPixelsSpread(getDirectionIndex(index, RIGHT));
+}
+function setPixelBG(index){
+    pixelElements[index].style.backgroundColor = pixelColor;
+}
+const UP = 'n';
+const DOWN = 's';
+const LEFT = 'w';
+const RIGHT = 'e';
+function getDirectionIndex(index, direction){
+    switch(direction){
+        case UP:
+            index-= renderedX;
+            if(index < 0) return false;
+            break;
+        case DOWN:
+            index+= sketchSizeX;
+            if(index >= pixelElements.length) return false;
+            break;
+        case LEFT:
+            if(index % renderedX == 0) return false;
+            index--;
+            break;
+        case RIGHT:
+            if((index + 1) % renderedX == 0) return false;
+            index++;
+            break;
+        default: return false;
+    }
+    return index;
 }
 function getPixelIndex(pixel) {
     return parseInt(pixel.id.slice(6))
@@ -70,25 +128,10 @@ function resizeSketchContainerX() {
     let widthRatio = sketchSizeX / sketchSizeY;
     let containerHeight = pxToVh(sketchContainer.offsetHeight);
     sketchContainer.style.width = `${containerHeight * widthRatio}vh`;
+    sketchContainer.style.gridTemplateColumns = `repeat(${sketchSizeX},1fr)`;
+    sketchContainer.style.gridTemplateRows = `repeat(${sketchSizeY},1fr)`;
 }
 function setPixelAttributes(element, index) {
-    //set size
-    let percentSizeX = 100 / sketchSizeX;
-    let percentSizeY = 100 / sketchSizeY;
-    if (adjustForRoundingError) {
-        if(onRightBorder(index))element.style.width = `${percentSizeX}%`;
-        else element.style.width = `calc(${percentSizeX}% + 1px)`; //+1px corrects rounding errors using %
-        if(onBottomBorder(index))element.style.height = `${percentSizeY}%`;
-        else element.style.height = `calc(${percentSizeY}% + 1px)`;///might change to pixel, but would need to
-    } else {                                                  ///adjust pixel size manually on resize
-        element.style.width = `${percentSizeX}%`;
-        element.style.height = `${percentSizeY}%`;
-
-    }
-    //set position
-    element.style.left = `${index % sketchSizeX * percentSizeX}%`;
-    element.style.top = `${Math.floor(index / sketchSizeX) * percentSizeY}%`;
-    //set event listeners
     element.addEventListener('mouseover', pixelHover);
     element.addEventListener('mousedown', pixelClick);
     //set background
@@ -98,19 +141,8 @@ function setPixelAttributes(element, index) {
     //add class(es)
     element.classList.add('sketchPixel');
 }
-function onRightBorder(index){
-    index++;
-    if (index % sketchSizeX == 0) return true;
-    return false;
-}
-function onBottomBorder(index){
-    index++;
-    if (index > (sketchSizeX * (sketchSizeY - 1))) return true;
-    return false;
-}
 function createPixelElement(index = 0) {
     let pElement = document.createElement('div');
-    // pElement.classList.add('sketchPixel');
     return pElement;
 }
 function removeSketchBox() {
@@ -121,7 +153,6 @@ function createSketchBox(size = sketchSizeX * sketchSizeY) {
     resetVariables();
     removeSketchBox();
     resizeSketchContainerX();
-    if (pixelElements != undefined) pixelElements.forEach(element => element.remove())
     for (let i = 0; i < size; i++) {
         let pixelElement = createPixelElement();
         pixelElements[i] = pixelElement;
@@ -342,6 +373,7 @@ colorSelectInput.onblur = () => {
     colorFocus = false;
     pixelColor = colorSelectInput.value;
 };
+pixelColor = colorSelectInput.value;
 //undo + redo actions
 let actionArray = new Array();
 let undoArray = new Array();

@@ -61,39 +61,33 @@ h4 {
 
 #sketchContainer {
     width: 75vh;
+    flex-shrink:0;
+    margin-right:auto;
     background-color: #A5BECC;
-    position: relative;
-    margin-top: -0.05vh;
-    margin-left: -0.05vh;
+    display:grid;
+    grid-template-columns:repeat(30, 1fr);
+    grid-template-rows:repeat(30, 1fr);
     cursor: crosshair;
     user-select:none;
-}
-
-.filledBorder {
-    border: solid;
-    border-width: 3px;
-    margin: -3px;
-    border-radius: 5px;
-    background-color: black;
-    margin-right: auto;
+    outline:solid;
+    outline-width:3px;
+    border-radius: 1vmin;
 }
 
 #sketchOptions {
     background-color: #243A73;
     flex-shrink: 0;
-    border: solid;
-    border-width: 3px;
-    margin: -3px;
+    outline: solid;
+    outline-width: 3px;
     border-radius: 5px;
     margin-left: auto;
     display: flex;
     flex-direction: column;
-    gap: 1vh;
+    gap: 2vh;
     justify-content: center;
 }
 
 .sketchPixel {
-    position: absolute;
 }
 .pixelBorder {
     outline: solid;
