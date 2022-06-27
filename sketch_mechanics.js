@@ -34,8 +34,7 @@ document.addEventListener('mouseup', removeMouseDown);
 function removeMouseDown(e) {
     mouseDown = false;
     if (currentAction.length > 0) {
-        pushAction(currentAction);
-        currentAction = new Array();
+        pushCurrentToAction();
     }
 }
 function pixelHover(e) {
@@ -58,16 +57,16 @@ function pixelClick(e) {
         default:
     }
 }
-console.log('fill very slow, causes errors');
+//fill algorithm
 let fillColorTarget = '';
 function fillPixels(element){
     fillColorTarget = element.style.backgroundColor;
-    console.log(fillColorTarget);
-    console.log(pixelColor);
-    if(fillColorTarget == (hexToRGB(pixelColor))) return console.log('cancel');
+    if(fillColorTarget == (hexToRGB(pixelColor))) return;
     fillPixelsSpread(getPixelIndex(element));
+    pushCurrentToAction();
 }
-function hexToRGB(hex = '#ff3456'){
+function hexToRGB(hex){
+    if(hex[0] !== '#') return console.log('invalid hex');
     let r = hex.slice(1,3);
     let g = hex.slice(3,5);
     let b = hex.slice(5,7);
@@ -76,11 +75,9 @@ function hexToRGB(hex = '#ff3456'){
     b = parseInt(b, 16);
     return `rgb(${r}, ${g}, ${b})`;
 }
-console.log(hexToRGB());
 function fillPixelsSpread(index){
     if(index === false) return;
-    console.log('i ' + index);
-    if(pixelElements[index].style.backgroundColor == fillColorTarget)setPixelBG(index);
+    if(pixelElements[index].style.backgroundColor === fillColorTarget)setPixelBG(index);
     else return;
     fillPixelsSpread(getDirectionIndex(index, UP));
     fillPixelsSpread(getDirectionIndex(index, DOWN));
@@ -88,6 +85,8 @@ function fillPixelsSpread(index){
     fillPixelsSpread(getDirectionIndex(index, RIGHT));
 }
 function setPixelBG(index){
+    //add to currentAction
+    pushCurrentAction(index, pixelElements[index].style.backgroundColor, pixelColor);
     pixelElements[index].style.backgroundColor = pixelColor;
 }
 const UP = 'n';
@@ -98,21 +97,21 @@ function getDirectionIndex(index, direction){
     switch(direction){
         case UP:
             index-= renderedX;
-            if(index < 0) return false;
+            if(index < 0) index = false;
             break;
         case DOWN:
-            index+= sketchSizeX;
-            if(index >= pixelElements.length) return false;
+            index+= renderedX;
+            if(index >= pixelElements.length) index =  false;
             break;
         case LEFT:
-            if(index % renderedX == 0) return false;
-            index--;
+            if(index % renderedX == 0) index = false;
+            else index--;
             break;
         case RIGHT:
-            if((index + 1) % renderedX == 0) return false;
-            index++;
+            if((index + 1) % renderedX == 0) index = false;
+            else index++;
             break;
-        default: return false;
+        default: index = false;
     }
     return index;
 }
@@ -159,8 +158,8 @@ function createSketchBox(size = sketchSizeX * sketchSizeY) {
         sketchContainer.appendChild(pixelElement);
         setPixelAttributes(pixelElement, i);
     }
-    renderedX = sketchSizeX;
-    renderedY = sketchSizeY;
+    renderedX = parseInt(sketchSizeX);
+    renderedY = parseInt(sketchSizeY);
 }
 function setArrayAll(arr, element = 0) {
     for (let i = 0; i < arr.length; i++) arr[i] = element;
@@ -391,6 +390,10 @@ function pushAction(action) {
     if ((action == undefined) || action.length == 0) return console.log('action undefined');
     actionArray.push(action);
 }
+function pushCurrentToAction(){
+    pushAction(currentAction);
+    currentAction = new Array();
+}
 function popAction() {
     let action = actionArray.pop();
     undoArray.push(action);
@@ -456,3 +459,4 @@ async function initPage() {
         setDrawCanvasButtonText();
     }
 }
+initPage();
