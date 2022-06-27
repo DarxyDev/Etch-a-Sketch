@@ -18,6 +18,8 @@ const MIN_SIZE = 10;
 //tool names
 const TOOL_DRAW = 'draw';
 const TOOL_FILL = 'fill';
+const TOOL_LIGHTEN = 'lighten';
+const TOOL_DARKEN = 'darken';
 
 //testing/user variables
 let currentTool = TOOL_DRAW;
@@ -38,10 +40,20 @@ function removeMouseDown(e) {
     }
 }
 function pixelHover(e) {
-    if (mouseDown && (currentTool == TOOL_DRAW)) {
-        let index = getPixelIndex(e.target);
-        pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
-        e.target.style.backgroundColor = pixelColor;
+    if(!mouseDown) return;
+    switch(currentTool){
+        case TOOL_DRAW:
+            let index = getPixelIndex(e.target);
+            pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
+            e.target.style.backgroundColor = pixelColor;
+            break;
+        case TOOL_FILL:
+            break;
+        case TOOL_LIGHTEN:
+            break;
+        case TOOL_DARKEN:
+            break;
+        default:
     }
 }
 function pixelClick(e) {
@@ -53,6 +65,12 @@ function pixelClick(e) {
             break;
         case TOOL_FILL:
             fillPixels(e.target);
+            break;
+        case TOOL_LIGHTEN:
+            console.log('not implemented yet');
+            break;
+        case TOOL_DARKEN:
+            console.log('not implemented yet');
             break;
         default:
     }
@@ -360,6 +378,11 @@ for (let i = 0; i < toolButtons.length; i++) {
             case TOOL_FILL:
                 sketchContainer.style.cursor = 'cell';
                 break;
+            case TOOL_LIGHTEN:
+                sketchContainer.style.cursor = 'wait';
+                break;
+            case TOOL_DARKEN:
+                sketchContainer.style.cursor = 'wait';
             default: ;
         }
     })
