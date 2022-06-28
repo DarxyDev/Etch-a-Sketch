@@ -40,8 +40,6 @@ Array.prototype.isEqual = function (array) {
     }
     return true;
 }
-let arr = [[1, 3, 1], 2, 3];
-let arr2 = [[1, 3], 2, 3];
 //event functions
 document.addEventListener('mousedown', setMouseDown);
 let mouseDown = false;
@@ -408,6 +406,26 @@ colorSelectInput.onblur = () => {
     pixelColor = colorSelectInput.value;
 };
 pixelColor = colorSelectInput.value;
+
+//undo + redo buttons
+const undoButton = document.getElementById('undoButton');
+const redoButton = document.getElementById('redoButton');
+undoButton.addEventListener('click', () => {
+    undoAction();
+});
+redoButton.addEventListener('click', () => {
+    redoAction();
+});
+function disableButton(button){
+    if(!button.classList.contains('optionsButton')) return;
+    button.classList.remove('optionsButton');
+    button.classList.add('disabledOptionsButton');
+}
+function enableButton(button){
+    if(!button.classList.contains('disabledOptionsButton')) return;
+    button.classList.remove('disabledOptionsButton');
+    button.classList.add('optionsButton');
+}
 //undo + redo actions
 let actionArray = new Array();
 let undoArray = new Array();
@@ -419,7 +437,7 @@ function createAction(pixelIndex, previousColor, newColor) {
 function pushCurrentAction(pixelIndex, previousColor, newColor) {
     let action = createAction(pixelIndex, previousColor, newColor);
     currentAction.push(action);
-    undoArray = new Array(); //prevents out of order redos
+    clearUndoArray();
 }
 function pushAction(action) {
     if ((action === undefined) || action.length == 0 || (!Array.isArray(action))) {
@@ -428,13 +446,14 @@ function pushAction(action) {
     }
     if (!actionIsUnique(action)) return;
     actionArray.push(action);
+    enableButton(undoButton);
 }
 function actionIsUnique(action) {
     let unique = false;
-    action.forEach(element => {
+    action.forEach(element => { //checks action.newColor against action.oldColor for each action
         if (element[1] != hexToRGB(element[2])) {
             unique = true;
-            return true;
+            return;
         }
     })
     return unique;
@@ -445,11 +464,15 @@ function pushCurrentToAction() {
 }
 function popAction() {
     let action = actionArray.pop();
+    enableButton(redoButton);
+    if(actionArray.length <= 0) disableButton(undoButton);
     undoArray.push(action);
     return action;
 }
 function popUndoAction() {
     let action = undoArray.pop();
+    enableButton(undoButton);
+    if(undoArray.length <= 0) disableButton(redoButton);
     actionArray.push(action);
     return action;
 }
@@ -483,15 +506,10 @@ function redoAction() {
         pixel.style.backgroundColor = action[2];
     }
 }
-//undo + redo buttons
-const undoButton = document.getElementById('undoButton');
-const redoButton = document.getElementById('redoButton');
-undoButton.addEventListener('click', () => {
-    undoAction();
-})
-redoButton.addEventListener('click', () => {
-    redoAction();
-})
+function clearUndoArray(){
+    disableButton(redoButton);
+    undoArray = new Array();
+}
 //page init
 function resetVariables() {
     actionArray = new Array();
