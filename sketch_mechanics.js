@@ -15,17 +15,33 @@ let lockedAspect = true;
 const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
 const MIN_SIZE = 10;
+const UP = 'u';
+const DOWN = 'd';
+const LEFT = 'l';
+const RIGHT = 'r';
 //tool names
 const TOOL_DRAW = 'draw';
 const TOOL_FILL = 'fill';
 const TOOL_LIGHTEN = 'lighten';
 const TOOL_DARKEN = 'darken';
-
 //testing/user variables
 let currentTool = TOOL_DRAW;
 let pixelColor = '#000000';
-let userAdjustRounding = 1.04;
-
+//prototype functions
+if (Array.prototype.isEqual)
+    console.log('Array.prototype.isEqual already exists. Overriding default function.');
+Array.prototype.isEqual = function (array) {
+    if (!Array.isArray(array)) return false;
+    if (this.length !== array.length) return false;
+    for (let i = 0; i < this.length; i++) {
+        if (Array.isArray(this[i])) {
+            if (!this[i].isEqual(array[i])) return false;
+        } else if (this[i] !== array[i]) return false;
+    }
+    return true;
+}
+let arr = [[1, 3, 1], 2, 3];
+let arr2 = [[1, 3], 2, 3];
 //event functions
 document.addEventListener('mousedown', setMouseDown);
 let mouseDown = false;
@@ -40,8 +56,8 @@ function removeMouseDown(e) {
     }
 }
 function pixelHover(e) {
-    if(!mouseDown) return;
-    switch(currentTool){
+    if (!mouseDown) return;
+    switch (currentTool) {
         case TOOL_DRAW:
             let index = getPixelIndex(e.target);
             pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
@@ -77,56 +93,52 @@ function pixelClick(e) {
 }
 //fill algorithm
 let fillColorTarget = '';
-function fillPixels(element){
+function fillPixels(element) {
     fillColorTarget = element.style.backgroundColor;
-    if(fillColorTarget == (hexToRGB(pixelColor))) return;
+    if (fillColorTarget == (hexToRGB(pixelColor))) return;
     fillPixelsSpread(getPixelIndex(element));
     pushCurrentToAction();
 }
-function hexToRGB(hex){
-    if(hex[0] !== '#') return console.log('invalid hex');
-    let r = hex.slice(1,3);
-    let g = hex.slice(3,5);
-    let b = hex.slice(5,7);
+function hexToRGB(hex) {
+    if (hex[0] !== '#') { return ''; console.log('invalid hex'); }
+    let r = hex.slice(1, 3);
+    let g = hex.slice(3, 5);
+    let b = hex.slice(5, 7);
     r = parseInt(r, 16);
     g = parseInt(g, 16);
     b = parseInt(b, 16);
     return `rgb(${r}, ${g}, ${b})`;
 }
-function fillPixelsSpread(index){
-    if(index === false) return;
-    if(pixelElements[index].style.backgroundColor === fillColorTarget)setPixelBG(index);
+function fillPixelsSpread(index) {
+    if (index === false) return;
+    if (pixelElements[index].style.backgroundColor === fillColorTarget) setPixelBG(index);
     else return;
     fillPixelsSpread(getDirectionIndex(index, UP));
     fillPixelsSpread(getDirectionIndex(index, DOWN));
     fillPixelsSpread(getDirectionIndex(index, LEFT));
     fillPixelsSpread(getDirectionIndex(index, RIGHT));
 }
-function setPixelBG(index){
+function setPixelBG(index) {
     //add to currentAction
     pushCurrentAction(index, pixelElements[index].style.backgroundColor, pixelColor);
     pixelElements[index].style.backgroundColor = pixelColor;
 }
-const UP = 'n';
-const DOWN = 's';
-const LEFT = 'w';
-const RIGHT = 'e';
-function getDirectionIndex(index, direction){
-    switch(direction){
+function getDirectionIndex(index, direction) {
+    switch (direction) {
         case UP:
-            index-= renderedX;
-            if(index < 0) index = false;
+            index -= renderedX;
+            if (index < 0) index = false;
             break;
         case DOWN:
-            index+= renderedX;
-            if(index >= pixelElements.length) index =  false;
+            index += renderedX;
+            if (index >= pixelElements.length) index = false;
             break;
         case LEFT:
-            if(index % renderedX == 0) index = false;
+            if (index % renderedX == 0) index = false;
             else index--;
             break;
         case RIGHT:
-            if((index + 1) % renderedX == 0) index = false;
+            if ((index + 1) % renderedX == 0) index = false;
             else index++;
             break;
         default: index = false;
@@ -410,10 +422,24 @@ function pushCurrentAction(pixelIndex, previousColor, newColor) {
     undoArray = new Array(); //prevents out of order redos
 }
 function pushAction(action) {
-    if ((action == undefined) || action.length == 0) return console.log('action undefined');
+    if ((action === undefined) || action.length == 0 || (!Array.isArray(action))) {
+        console.log('action undefined');
+        return;
+    }
+    if (!actionIsUnique(action)) return;
     actionArray.push(action);
 }
-function pushCurrentToAction(){
+function actionIsUnique(action) {
+    let unique = false;
+    action.forEach(element => {
+        if (element[1] != hexToRGB(element[2])) {
+            unique = true;
+            return true;
+        }
+    })
+    return unique;
+}
+function pushCurrentToAction() {
     pushAction(currentAction);
     currentAction = new Array();
 }
