@@ -15,6 +15,8 @@ let lockedAspect = true;
 const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
 const MIN_SIZE = 10;
+const DARKEN_AMOUNT = 1.1;
+const LIGHTEN_AMOUNT = 1.1;
 const UP = 'u';
 const DOWN = 'd';
 const LEFT = 'l';
@@ -26,6 +28,7 @@ const TOOL_LIGHTEN = 'lighten';
 const TOOL_DARKEN = 'darken';
 //testing/user variables
 let currentTool = TOOL_DRAW;
+console.log(currentTool);
 let pixelColor = '#000000';
 //prototype functions
 if (Array.prototype.isEqual)
@@ -57,13 +60,15 @@ function pixelHover(e) {
     if (!mouseDown) return;
     switch (currentTool) {
         case TOOL_DRAW:
-            let index = getPixelIndex(e.target);
-            pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
-            e.target.style.backgroundColor = pixelColor;
+            setPixelBG(getPixelIndex(e.target));
+            //  let index = getPixelIndex(e.target);
+            // pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
+            // e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
             break;
         case TOOL_LIGHTEN:
+            lightenPixelBackground(getPixelIndex(e.target));
             break;
         case TOOL_DARKEN:
             break;
@@ -74,20 +79,28 @@ function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
     switch (currentTool) {
         case TOOL_DRAW:
-            pushCurrentAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor);
-            e.target.style.backgroundColor = pixelColor;
+            // pushCurrentAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor);
+            // e.target.style.backgroundColor = pixelColor;
+            setPixelBG(getPixelIndex(e.target));
             break;
         case TOOL_FILL:
             fillPixels(e.target);
             break;
         case TOOL_LIGHTEN:
-            console.log('not implemented yet');
+            lightenPixelBackground(getPixelIndex(e.target));
             break;
         case TOOL_DARKEN:
             console.log('not implemented yet');
             break;
         default:
     }
+}
+//set pixel background + add to currentAction
+function setPixelBG(index, color = pixelColor) {
+    let pixel = pixelElements[index];
+    if (!pixel) return;
+    pushCurrentAction(index, pixel.style.backgroundColor, color);
+    pixel.style.backgroundColor = color;
 }
 //fill algorithm
 let fillColorTarget = '';
@@ -116,11 +129,6 @@ function fillPixelsSpread(index) {
     fillPixelsSpread(getDirectionIndex(index, LEFT));
     fillPixelsSpread(getDirectionIndex(index, RIGHT));
 }
-function setPixelBG(index) {
-    //add to currentAction
-    pushCurrentAction(index, pixelElements[index].style.backgroundColor, pixelColor);
-    pixelElements[index].style.backgroundColor = pixelColor;
-}
 function getDirectionIndex(index, direction) {
     switch (direction) {
         case UP:
@@ -146,6 +154,33 @@ function getDirectionIndex(index, direction) {
 function getPixelIndex(pixel) {
     return parseInt(pixel.id.slice(6))
 }
+//lighten background
+function lightenPixelBackground(index) {
+    let pixel = pixelElements[index];
+    if (!pixel) return;
+    let bgColor = pixel.style.backgroundColor;
+    if ((bgColor == '') || (bgColor == 'rgb(255, 255, 255)')) return;
+    bgValues = getRGBValues(bgColor);
+    let hexColor = '#';
+    bgValues.forEach(value => {
+        value *= LIGHTEN_AMOUNT;
+        if(value < 10) value += 1.5;
+        if (value > 255) value = 255;
+        value = Math.floor(value);
+        value = value.toString(16).toUpperCase();
+        if(value.length <= 1) value+=0;
+        hexColor += value;
+    })
+    setPixelBG(index, hexColor);
+}
+function getRGBValues(color) {
+    if (typeof (color) !== typeof ('')) { console.log('argument not a string'); return false; }
+    if (color[0] !== 'r') { console.log('color is not in rgb format'); return false; }
+    color = color.slice(4, color.length - 1);
+    return color.split(',');
+}
+//darken background
+
 //render functions
 function pxToVh(px) {
     let documentHeight = document.documentElement.offsetHeight || document.documentElement.clientHeight;
@@ -416,13 +451,13 @@ undoButton.addEventListener('click', () => {
 redoButton.addEventListener('click', () => {
     redoAction();
 });
-function disableButton(button){
-    if(!button.classList.contains('optionsButton')) return;
+function disableButton(button) {
+    if (!button.classList.contains('optionsButton')) return;
     button.classList.remove('optionsButton');
     button.classList.add('disabledOptionsButton');
 }
-function enableButton(button){
-    if(!button.classList.contains('disabledOptionsButton')) return;
+function enableButton(button) {
+    if (!button.classList.contains('disabledOptionsButton')) return;
     button.classList.remove('disabledOptionsButton');
     button.classList.add('optionsButton');
 }
@@ -465,14 +500,14 @@ function pushCurrentToAction() {
 function popAction() {
     let action = actionArray.pop();
     enableButton(redoButton);
-    if(actionArray.length <= 0) disableButton(undoButton);
+    if (actionArray.length <= 0) disableButton(undoButton);
     undoArray.push(action);
     return action;
 }
 function popUndoAction() {
     let action = undoArray.pop();
     enableButton(undoButton);
-    if(undoArray.length <= 0) disableButton(redoButton);
+    if (undoArray.length <= 0) disableButton(redoButton);
     actionArray.push(action);
     return action;
 }
@@ -506,7 +541,7 @@ function redoAction() {
         pixel.style.backgroundColor = action[2];
     }
 }
-function clearUndoArray(){
+function clearUndoArray() {
     disableButton(redoButton);
     undoArray = new Array();
 }
