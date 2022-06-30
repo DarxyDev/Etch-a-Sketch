@@ -45,11 +45,13 @@ Array.prototype.isEqual = function (array) {
 }
 //event functions
 document.addEventListener('mousedown', setMouseDown);
+document.addEventListener('touchstart', setMouseDown);
 let mouseDown = false;
 function setMouseDown(e) {
     mouseDown = true;
 }
 document.addEventListener('mouseup', removeMouseDown);
+document.addEventListener('touchend', removeMouseDown);
 function removeMouseDown(e) {
     mouseDown = false;
     if (currentAction.length > 0) {
@@ -64,18 +66,21 @@ function keydownManager(e) {
     if (key == 'y') redoAction();
 }
 function pixelHover(e) {
-    if (!mouseDown) return;
+    let target = e.target;
+    if (e.type == 'touchmove') {
+        target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    }else if (!mouseDown) return;
     switch (currentTool) {
         case TOOL_DRAW:
-            setPixelBG(getPixelIndex(e.target));
+            setPixelBG(getPixelIndex(target));
             break;
         case TOOL_FILL:
             break;
         case TOOL_LIGHTEN:
-            shadePixelBackground(getPixelIndex(e.target), LIGHTEN_AMOUNT);
+            shadePixelBackground(getPixelIndex(target), LIGHTEN_AMOUNT);
             break;
         case TOOL_DARKEN:
-            shadePixelBackground(getPixelIndex(e.target), DARKEN_AMOUNT);
+            shadePixelBackground(getPixelIndex(target), DARKEN_AMOUNT);
             break;
         default:
     }
@@ -157,7 +162,7 @@ function getDirectionIndex(index, direction) {
 function getPixelIndex(pixel) {
     return parseInt(pixel.id.slice(6))
 }
-//lighten background
+//shade background (lighten/darken)
 function shadePixelBackground(index, shadeAmount) {
     let pixel = pixelElements[index];
     if (!pixel) return;
@@ -185,7 +190,6 @@ function getRGBValues(color) {
     color = color.slice(4, color.length - 1);
     return color.split(',');
 }
-//darken background
 
 //render functions
 function pxToVh(px) {
@@ -201,6 +205,7 @@ function resizeSketchContainerX() {
 }
 function setPixelAttributes(element, index) {
     element.addEventListener('mouseover', pixelHover);
+    element.addEventListener('touchmove', pixelHover);
     element.addEventListener('mousedown', pixelClick);
     //set background
     element.style.backgroundColor = DEFAULT_PIXEL_BG;
