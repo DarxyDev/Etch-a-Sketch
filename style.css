@@ -30,12 +30,14 @@ header {
     border-radius: 0 0 50px 50px;
     position: fixed;
     top: 0;
+    z-index: 50;
 }
 
 footer {
     border-radius: 50px 50px 0 0;
     position: fixed;
     bottom: 0;
+    z-index:50;
 }
 
 h2,
@@ -47,6 +49,7 @@ h4 {
     display: flex;
     gap: 1.5vh;
     margin: 1vh;
+    z-index:100;
 }
 
 #contentSpacer,
@@ -315,6 +318,7 @@ button {
 .dropDownItemContainer {
     position: absolute;
     display: none;
+    z-index:9999;
 }
 
 .dropDownMenu:hover .dropDownItemContainer {

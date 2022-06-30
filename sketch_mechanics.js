@@ -15,8 +15,8 @@ let lockedAspect = true;
 const DEFAULT_PIXEL_BG = '';
 const MAX_SIZE = 100;
 const MIN_SIZE = 10;
-const DARKEN_AMOUNT = 1.1;
-const LIGHTEN_AMOUNT = 1.1;
+const DARKEN_AMOUNT = -10;
+const LIGHTEN_AMOUNT = 10;
 const UP = 'u';
 const DOWN = 'd';
 const LEFT = 'l';
@@ -56,21 +56,26 @@ function removeMouseDown(e) {
         pushCurrentToAction();
     }
 }
+document.addEventListener('keydown', keydownManager);
+function keydownManager(e) {
+    let key = e.key;
+    if (!e.ctrlKey) return;
+    if (key == 'z') undoAction();
+    if (key == 'y') redoAction();
+}
 function pixelHover(e) {
     if (!mouseDown) return;
     switch (currentTool) {
         case TOOL_DRAW:
             setPixelBG(getPixelIndex(e.target));
-            //  let index = getPixelIndex(e.target);
-            // pushCurrentAction(index, e.target.style.backgroundColor, pixelColor);
-            // e.target.style.backgroundColor = pixelColor;
             break;
         case TOOL_FILL:
             break;
         case TOOL_LIGHTEN:
-            lightenPixelBackground(getPixelIndex(e.target));
+            shadePixelBackground(getPixelIndex(e.target), LIGHTEN_AMOUNT);
             break;
         case TOOL_DARKEN:
+            shadePixelBackground(getPixelIndex(e.target), DARKEN_AMOUNT);
             break;
         default:
     }
@@ -79,18 +84,16 @@ function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
     switch (currentTool) {
         case TOOL_DRAW:
-            // pushCurrentAction(getPixelIndex(e.target), e.target.style.backgroundColor, pixelColor);
-            // e.target.style.backgroundColor = pixelColor;
             setPixelBG(getPixelIndex(e.target));
             break;
         case TOOL_FILL:
             fillPixels(e.target);
             break;
         case TOOL_LIGHTEN:
-            lightenPixelBackground(getPixelIndex(e.target));
+            shadePixelBackground(getPixelIndex(e.target), LIGHTEN_AMOUNT);
             break;
         case TOOL_DARKEN:
-            console.log('not implemented yet');
+            shadePixelBackground(getPixelIndex(e.target), DARKEN_AMOUNT);
             break;
         default:
     }
@@ -155,22 +158,25 @@ function getPixelIndex(pixel) {
     return parseInt(pixel.id.slice(6))
 }
 //lighten background
-function lightenPixelBackground(index) {
+function shadePixelBackground(index, shadeAmount) {
     let pixel = pixelElements[index];
     if (!pixel) return;
     let bgColor = pixel.style.backgroundColor;
-    if ((bgColor == '') || (bgColor == 'rgb(255, 255, 255)')) return;
+    if (bgColor == '') return;
+    if ((bgColor == 'rgb(255, 255, 255)') && (shadeAmount >= 0)) return;
+    if ((bgColor == 'rgb(0, 0, 0)') && (shadeAmount <= 0)) return;
     bgValues = getRGBValues(bgColor);
+    if (bgValues.length > 3) return;
     let hexColor = '#';
-    bgValues.forEach(value => {
-        value *= LIGHTEN_AMOUNT;
-        if(value < 10) value += 1.5;
+    for (let i = 0; i < 3; i++) {
+        let value = bgValues[i];
+        value = +value + +shadeAmount;
         if (value > 255) value = 255;
-        value = Math.floor(value);
+        if (value < 0) value = 0;
         value = value.toString(16).toUpperCase();
-        if(value.length <= 1) value+=0;
+        if (value.length <= 1) value = '0' + value;
         hexColor += value;
-    })
+    }
     setPixelBG(index, hexColor);
 }
 function getRGBValues(color) {
@@ -424,10 +430,10 @@ for (let i = 0; i < toolButtons.length; i++) {
                 sketchContainer.style.cursor = 'cell';
                 break;
             case TOOL_LIGHTEN:
-                sketchContainer.style.cursor = 'wait';
+                sketchContainer.style.cursor = 'zoom-in';
                 break;
             case TOOL_DARKEN:
-                sketchContainer.style.cursor = 'wait';
+                sketchContainer.style.cursor = 'zoom-out';
             default: ;
         }
     })
