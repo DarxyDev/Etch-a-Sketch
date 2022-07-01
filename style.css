@@ -90,7 +90,9 @@ h4 {
     justify-content: center;
 }
 
-.sketchPixel {}
+.sketchPixel {
+    touch-action:none;
+}
 
 .pixelBorder {
     outline: solid;
