@@ -69,6 +69,7 @@ function pixelHover(e) {
     let target = e.target;
     if (e.type == 'touchmove') {
         target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        e.preventDefault();
     }else if (!mouseDown) return;
     switch (currentTool) {
         case TOOL_DRAW:
