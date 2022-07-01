@@ -48,11 +48,13 @@ document.addEventListener('mousedown', setMouseDown);
 document.addEventListener('touchstart', setMouseDown);
 let mouseDown = false;
 function setMouseDown(e) {
+    if(e.type == 'touchstart') e.preventDefault();
     mouseDown = true;
 }
 document.addEventListener('mouseup', removeMouseDown);
 document.addEventListener('touchend', removeMouseDown);
 function removeMouseDown(e) {
+    if(e.type == 'touchend') e.preventDefault;
     mouseDown = false;
     if (currentAction.length > 0) {
         pushCurrentToAction();
@@ -87,7 +89,7 @@ function pixelHover(e) {
 }
 function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
-    if(e.type == 'touchstart')
+    if(e.type == 'touchstart') e.preventDefault();
     switch (currentTool) {
         case TOOL_DRAW:
             setPixelBG(getPixelIndex(e.target));
