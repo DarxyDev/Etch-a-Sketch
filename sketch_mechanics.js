@@ -87,7 +87,6 @@ function pixelHover(e) {
 }
 function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
-    if(e.type == 'touchstart')
     switch (currentTool) {
         case TOOL_DRAW:
             setPixelBG(getPixelIndex(e.target));
