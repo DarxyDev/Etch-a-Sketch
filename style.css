@@ -1,16 +1,15 @@
-.colors {
-    color: #7C3E66;
-    color: #F2EBE9;
-    color: #A5BECC;
-    color: #243A73;
-
+:root {
+    --headerFooterColor: #7C3E66;
+    --whiteBackground: #F2EBE9;
+    --lightBackground: #A5BECC;
+    --darkBackground: #243A73;
 }
 
 body {
     height: 100vh;
     padding: 0;
     margin: 0;
-    background-color: #F2EBE9;
+    background-color: var(--whiteBackground);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     display: flex;
     flex-direction: column;
@@ -19,8 +18,9 @@ body {
 
 header,
 footer {
-    background-color: #7C3E66;
+    background-color: var(--headerFooterColor);
     display: flex;
+    position: fixed;
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -28,16 +28,12 @@ footer {
 
 header {
     border-radius: 0 0 50px 50px;
-    position: fixed;
     top: 0;
-    z-index: 50;
 }
 
 footer {
     border-radius: 50px 50px 0 0;
-    position: fixed;
     bottom: 0;
-    z-index:50;
 }
 
 h2,
@@ -49,7 +45,7 @@ h4 {
     display: flex;
     gap: 1.5vh;
     margin: 1vh;
-    z-index:100;
+    z-index: 100;
 }
 
 #contentSpacer,
@@ -66,7 +62,7 @@ h4 {
     width: 75vh;
     flex-shrink: 0;
     margin-right: auto;
-    background-color: #A5BECC;
+    background-color: var(--lightBackground);
     display: grid;
     grid-template-columns: repeat(30, 1fr);
     grid-template-rows: repeat(30, 1fr);
@@ -78,7 +74,7 @@ h4 {
 }
 
 #sketchOptions {
-    background-color: #243A73;
+    background-color: var(--darkBackground);
     flex-shrink: 0;
     outline: solid;
     outline-width: 3px;
@@ -91,7 +87,7 @@ h4 {
 }
 
 .sketchPixel {
-    touch-action:none;
+    touch-action: none;
 }
 
 .pixelBorder {
@@ -110,12 +106,12 @@ button {
     font-size: 2vh;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-align: center;
-    background-color: #F2EBE9;
+    background-color: var(--whiteBackground);
     border-radius: 1vmin;
 }
 
 .buttonText {
-    background-color: #A5BECC;
+    background-color: var(--lightBackground);
     text-align: center;
     font-size: 2vh;
     margin-bottom: 1vh;
@@ -128,7 +124,7 @@ button {
     appearance: none;
     width: 70%;
     height: 1vh;
-    background: #A5BECC;
+    background: var(--lightBackground);
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
@@ -144,23 +140,23 @@ button {
     appearance: none;
     width: 2vh;
     height: 2vh;
-    background: #F2EBE9;
+    background: var(--whiteBackground);
     cursor: pointer;
     border-radius: 100%;
     outline: solid;
     outline-width: 2px;
-    outline-color: #243A73;
+    outline-color: var(--darkBackground);
 }
 
 .slider::-moz-range-thumb {
     width: 2vh;
     height: 2vh;
-    background: #F2EBE9;
+    background: var(--whiteBackground);
     cursor: pointer;
     border-radius: 100%;
     outline: solid;
     outline-width: 2px;
-    outline-color: #243A73;
+    outline-color: var(--darkBackground);
 }
 
 .sliderContainer {
@@ -181,7 +177,7 @@ button {
 }
 
 .sliderReset {
-    background-color: #F2EBE9;
+    background-color: var(--whiteBackground);
     border-radius: 100%;
     height: 2vh;
     width: 2vh;
@@ -200,7 +196,7 @@ button {
 }
 
 .optionsSwitch {
-    background-color: #F2EBE9;
+    background-color: var(--whiteBackground);
     font-size: 2vh;
     outline: solid;
     outline-width: 2px;
@@ -211,9 +207,9 @@ button {
 }
 
 .pressedBoxShadow {
-    -webkit-box-shadow: inset 0px 0px 1vh #243A73;
-    -moz-box-shadow: inset 0px 0px 1vh #243A73;
-    box-shadow: inset 0px 0px 1vh #243A73;
+    -webkit-box-shadow: inset 0px 0px 1vh var(--darkBackground);
+    -moz-box-shadow: inset 0px 0px 1vh var(--darkBackground);
+    box-shadow: inset 0px 0px 1vh var(--darkBackground);
 }
 
 /*drawPixel button*/
@@ -282,7 +278,7 @@ button {
 
 .dropDownMenu {
     position: relative;
-    background-color: #F2EBE9;
+    background-color: var(--whiteBackground);
     outline: solid;
     outline-width: 2px;
     border-radius: 1vmin;
@@ -320,7 +316,7 @@ button {
 .dropDownItemContainer {
     position: absolute;
     display: none;
-    z-index:9999;
+    z-index: 9999;
 }
 
 .dropDownMenu:hover .dropDownItemContainer {
