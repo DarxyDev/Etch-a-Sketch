@@ -28,7 +28,6 @@ const TOOL_LIGHTEN = 'lighten';
 const TOOL_DARKEN = 'darken';
 //testing/user variables
 let currentTool = TOOL_DRAW;
-console.log(currentTool);
 let pixelColor = '#000000';
 //prototype functions
 if (Array.prototype.isEqual)
@@ -241,7 +240,14 @@ function setArrayAll(arr, element = 0) {
 //options input
 //options misc functions
 function addPixelBorder() {
-    pixelElements.forEach(element => element.classList.add('pixelBorder'));
+    pixelElements.forEach(element => {
+        let index = getPixelIndex(element);
+        if(index == 0) element.style.borderRadius = '1vmin 0 0 0';
+        else if(index == renderedX - 1)  element.style.borderRadius = '0 1vmin 0 0';
+        else if(index == pixelElements.length - renderedY) element.style.borderRadius = '0 0 0 1vmin';
+        else if(index == pixelElements.length - 1) element.style.borderRadius = '0 0 1vmin 0';
+        element.classList.add('pixelBorder')
+    });
 }
 function removePixelBorder() {
     pixelElements.forEach(element => element.classList.remove('pixelBorder'));
