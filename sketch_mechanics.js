@@ -87,7 +87,7 @@ function pixelHover(e) {
 }
 function pixelClick(e) {
     if (colorFocus) return; //prevents click while color menu open
-    if(e.type == 'touchstart') e.preventDefault();
+    if(e.type == 'touchstart')
     switch (currentTool) {
         case TOOL_DRAW:
             setPixelBG(getPixelIndex(e.target));
@@ -207,7 +207,6 @@ function resizeSketchContainerX() {
 function setPixelAttributes(element, index) {
     element.addEventListener('mouseover', pixelHover);
     element.addEventListener('touchmove', pixelHover);
-    element.addEventListener('touchstart', pixelClick);
     element.addEventListener('mousedown', pixelClick);
     //set background
     element.style.backgroundColor = DEFAULT_PIXEL_BG;
