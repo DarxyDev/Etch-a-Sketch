@@ -48,7 +48,6 @@ document.addEventListener('mousedown', setMouseDown);
 document.addEventListener('touchstart', setMouseDown);
 let mouseDown = false;
 function setMouseDown(e) {
-    if(e.type == 'touchstart') e.preventDefault();
     mouseDown = true;
 }
 document.addEventListener('mouseup', removeMouseDown);
