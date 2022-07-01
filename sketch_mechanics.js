@@ -53,7 +53,6 @@ function setMouseDown(e) {
 document.addEventListener('mouseup', removeMouseDown);
 document.addEventListener('touchend', removeMouseDown);
 function removeMouseDown(e) {
-    if(e.type == 'touchend') e.preventDefault;
     mouseDown = false;
     if (currentAction.length > 0) {
         pushCurrentToAction();
