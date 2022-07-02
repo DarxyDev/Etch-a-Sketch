@@ -26,6 +26,7 @@ const TOOL_DRAW = 'draw';
 const TOOL_FILL = 'fill';
 const TOOL_LIGHTEN = 'lighten';
 const TOOL_DARKEN = 'darken';
+const TOOL_BLEND = 'blend';
 //testing/user variables
 let currentTool = TOOL_DRAW;
 let pixelColor = '#000000';
@@ -68,7 +69,7 @@ function pixelHover(e) {
     let target = e.target;
     if (e.type == 'touchmove') {
         target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-    }else if (!mouseDown) return;
+    } else if (!mouseDown) return;
     switch (currentTool) {
         case TOOL_DRAW:
             setPixelBG(getPixelIndex(target));
@@ -80,6 +81,9 @@ function pixelHover(e) {
             break;
         case TOOL_DARKEN:
             shadePixelBackground(getPixelIndex(target), DARKEN_AMOUNT);
+            break;
+        case TOOL_BLEND:
+            blendPixel(getPixelIndex(target));
             break;
         default:
     }
@@ -98,6 +102,9 @@ function pixelClick(e) {
             break;
         case TOOL_DARKEN:
             shadePixelBackground(getPixelIndex(e.target), DARKEN_AMOUNT);
+            break;
+        case TOOL_BLEND:
+            blendPixel(getPixelIndex(e.target));
             break;
         default:
     }
@@ -169,7 +176,7 @@ function shadePixelBackground(index, shadeAmount) {
     if (bgColor == '') return;
     if ((bgColor == 'rgb(255, 255, 255)') && (shadeAmount >= 0)) return;
     if ((bgColor == 'rgb(0, 0, 0)') && (shadeAmount <= 0)) return;
-    bgValues = getRGBValues(bgColor);
+    let bgValues = getRGBValues(bgColor);
     if (bgValues.length > 3) return;
     let hexColor = '#';
     for (let i = 0; i < 3; i++) {
@@ -188,6 +195,34 @@ function getRGBValues(color) {
     if (color[0] !== 'r') { console.log('color is not in rgb format'); return false; }
     color = color.slice(4, color.length - 1);
     return color.split(',');
+}
+//blend pixel
+function blendPixel(index, blendAmount = 10) { // amount = 1 - 100%
+    if (blendAmount < 1) blendAmount = 1;
+    if (blendAmount > 100) blendAmount = 100;
+    let pixel = pixelElements[index];
+    if (!pixel) return false;
+    let bgColor = pixel.style.backgroundColor;
+    if (bgColor == '') return false;
+    let bgValues = getRGBValues(bgColor);
+    let colorValues = getRGBValues(hexToRGB(pixelColor));
+    let hexColor = '#';
+    for (let i = 0; i < 3; i++) {
+        let bgVal = bgValues[i];
+        let cVal = colorValues[i];
+        bgVal *= 1 - (blendAmount / 100);
+        cVal *= blendAmount / 100;
+        cVal = Math.round(clampValue(bgVal + cVal, 0, 255));
+        cVal = cVal.toString(16).toUpperCase();
+        if (cVal.length < 2) cVal = '0' + cVal;
+        hexColor += cVal;
+    }
+    setPixelBG(index, hexColor);
+}
+function clampValue(value, min, max) {
+    if (+value < min) value = min;
+    if (+value > max) value = max;
+    return +value;
 }
 
 //render functions
@@ -238,19 +273,35 @@ function setArrayAll(arr, element = 0) {
     for (let i = 0; i < arr.length; i++) arr[i] = element;
 }
 //options input
-//options misc functions
+//options: border
+let addBorderBtn = document.getElementById('addBorderBtn');
+addBorderBtn.addEventListener('click', () => { togglePixelBorder() })
 function addPixelBorder() {
     pixelElements.forEach(element => {
         let index = getPixelIndex(element);
-        if(index == 0) element.style.borderRadius = '1vmin 0 0 0';
-        else if(index == renderedX - 1)  element.style.borderRadius = '0 1vmin 0 0';
-        else if(index == pixelElements.length - renderedY) element.style.borderRadius = '0 0 0 1vmin';
-        else if(index == pixelElements.length - 1) element.style.borderRadius = '0 0 1vmin 0';
+        if (index == 0) element.style.borderRadius = '1vmin 0 0 0';
+        else if (index == renderedX - 1) element.style.borderRadius = '0 1vmin 0 0';
+        else if (index == pixelElements.length - renderedY) element.style.borderRadius = '0 0 0 1vmin';
+        else if (index == pixelElements.length - 1) element.style.borderRadius = '0 0 1vmin 0';
         element.classList.add('pixelBorder')
     });
 }
 function removePixelBorder() {
     pixelElements.forEach(element => element.classList.remove('pixelBorder'));
+}
+let pixelBorderOn = false;
+function togglePixelBorder(forceRemove = false) {
+    if (pixelBorderOn || forceRemove) {
+        removePixelBorder();
+        addBorderBtn.classList.remove('pressedBoxShadow');
+        addBorderBtn.textContent = 'Add Border';
+        pixelBorderOn = false;
+    } else {
+        addPixelBorder();
+        addBorderBtn.classList.add('pressedBoxShadow');
+        addBorderBtn.textContent = 'Remove Border';
+        pixelBorderOn = true;
+    }
 }
 
 //options:canvas size
@@ -445,6 +496,9 @@ for (let i = 0; i < toolButtons.length; i++) {
                 break;
             case TOOL_DARKEN:
                 sketchContainer.style.cursor = 'zoom-out';
+            case TOOL_BLEND:
+                sketchContainer.style.cursor = 'crosshair';
+                break;
             default: ;
         }
     })
@@ -567,8 +621,10 @@ function resetVariables() {
     actionArray = new Array();
     undoArray = new Array();
     currentAction = new Array();
+    togglePixelBorder(true);
 }
 async function initPage() {
+    console.log('Rendering canvas.');
     if (sketchContainer.offsetHeight == 0) {
         console.log('Error: sketchContainer not loaded in DOM. Retrying in 20ms.');
         setTimeout(initPage, 20);
@@ -576,6 +632,7 @@ async function initPage() {
     else {
         createSketchBox();
         setDrawCanvasButtonText();
+        console.log('Canvas rendered.');
     }
 }
 initPage();
