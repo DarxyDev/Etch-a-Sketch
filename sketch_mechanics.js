@@ -12,7 +12,7 @@ let rendering = false;
 let adjustForRoundingError = true;
 let lockedAspect = true;
 //constants
-const DEFAULT_PIXEL_BG = '#A5BECC';
+const DEFAULT_PIXEL_BG = '';//'#A5BECC';
 const MAX_SIZE = 100;
 const MIN_SIZE = 10;
 const DARKEN_AMOUNT = -10;

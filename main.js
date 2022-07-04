@@ -1,13 +1,13 @@
 //canvas
 let canvasElement = document.getElementById('canvasTest');
 let ctx = canvasElement.getContext('2d');
-let canvSizeMulti = 10;
+let canvSizeMulti = 20;
 
 function setCanvasSize(){
     let canvSizeX = renderedX * canvSizeMulti;
     let canvSizeY = renderedY * canvSizeMulti;
-    canvasElement.style.height = `${canvSizeY}px`;
-    canvasElement.style.width = `${canvSizeX}px`;
+    // canvasElement.style.height = `${canvSizeY}px`;
+    // canvasElement.style.width = `${canvSizeX}px`;
     ctx.canvas.width = canvSizeX;
     ctx.canvas.height = canvSizeY;
     canvasElement.style.width = canvSizeX;
@@ -15,6 +15,7 @@ function setCanvasSize(){
 }
 function setCtx(){
     for(let i = 0; i < pixelElements.length; i++){
+        if(pixelElements[i].style.backgroundColor == '') continue;
         let xPos = i % renderedX;
         let yPos = 0;
         if(i != 0) yPos = Math.floor(i / renderedX);
