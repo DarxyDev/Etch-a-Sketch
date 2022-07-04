@@ -330,3 +330,14 @@ button {
 .dropDownMain:hover {
     opacity: .7;
 }
+/* canvas */
+.canvas{
+    height: 500px;
+    width: 500px;
+    background-color: var(--lightBackground);
+    margin:5vh;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
