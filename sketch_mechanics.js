@@ -401,7 +401,7 @@ aspectRatioSwitch.addEventListener('mouseleave', () => {
 const drawCanvasButton = document.getElementById('drawCanvasButton');
 function clearCanvas() {
     pixelElements.forEach(element => element.style.backgroundColor = DEFAULT_PIXEL_BG);
-    resetVariables();
+    resetVariables(true);
 }
 drawCanvasButton.onclick = () => {
     if (rendering) return;
@@ -570,11 +570,15 @@ function clearUndoArray() {
     undoArray = new Array();
 }
 //page init
-function resetVariables() {
+function resetVariables(partialReset = false) {
     actionArray = new Array();
     undoArray = new Array();
     currentAction = new Array();
-    togglePixelBorder(true);
+    disableButton(undoButton);
+    disableButton(redoButton);
+    if (!partialReset) {
+        togglePixelBorder(true);
+    }
 }
 async function initPage() {
     console.log('Rendering canvas.');
