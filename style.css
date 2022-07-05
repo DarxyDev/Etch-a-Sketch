@@ -6,21 +6,19 @@
 }
 
 body {
-    height: 100vh;
-    padding: 0;
+    min-height:100vh;
     margin: 0;
     background-color: var(--whiteBackground);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 header,
 footer {
     background-color: var(--headerFooterColor);
     display: flex;
-    position: fixed;
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -28,12 +26,10 @@ footer {
 
 header {
     border-radius: 0 0 50px 50px;
-    top: 0;
 }
 
 footer {
     border-radius: 50px 50px 0 0;
-    bottom: 0;
 }
 
 h2,
