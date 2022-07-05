@@ -268,6 +268,7 @@ function createSketchBox(size = sketchSizeX * sketchSizeY) {
     }
     renderedX = parseInt(sketchSizeX);
     renderedY = parseInt(sketchSizeY);
+    initDownloadDropdown();
 }
 function setArrayAll(arr, element = 0) {
     for (let i = 0; i < arr.length; i++) arr[i] = element;

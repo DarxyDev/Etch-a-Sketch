@@ -7,15 +7,15 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Etch-a-Sketch</title>
     <link rel='stylesheet' href='style.css'>
+    <script src='image_download.js' defer></script>
     <script src='sketch_mechanics.js' defer></script>
-    <script src='main.js' defer></script>
 </head>
 
 <body>
     <header>
         <h2>Etch-a-Sketch</h2>
     </header>
-    <div id='content'>
+    <main id='content'>
         <div id='sketchOptions'>
             <div>
                 <div class='buttonText'>Horozontal Size</div>
@@ -52,7 +52,7 @@
                     <div class='dropDownContainer'>
                         <div class="dropDownMenu" id='toolDropDownMenu'>
                             <div class="dropDownMain" id='toolMain'>Draw</div>
-                            <div class='dropDownItemContainer' id='itemContainer'>
+                            <div class='dropDownItemContainer'>
                                 <div class='dropDownItem'>Draw</div>
                                 <div class='dropDownItem'>Fill</div>
                                 <div class='dropDownItem'>Lighten</div>
@@ -79,14 +79,22 @@
                 </div>
             </div>
             <div>
-                <!-- <div class="buttonText">Download as Image</div> -->
-                <div class="optionsButton" id='downloadBtn'>Download Image</div>
-                <a href="" download style="display:none" id="downloadLink"  target="_blank"></a>
+                <div class="buttonText">Download as Image</div>
+                <div class='drawToolsContainer'>
+                    <button class="optionsButton" id='downloadBtn'>Download</button>
+                    <div class='dropDownContainer'>
+                        <div class="dropDownMenu" id='imgSizeDropDown'>
+                            <div class="dropDownMain" id='imgSizeMain'>30x30</div>
+                            <div class='dropDownItemContainer' id="imgSizeItems"></div>
+                        </div>
+                    </div>
+                    <a href="" download id="downloadLink" target="_blank"></a>
+                </div>
             </div>
         </div>
         <div id='sketchContainer'></div>
         <div id='contentSpacer'></div>
-    </div>
+    </main>
     <canvas class=canvas id='canvasTest' style="display:none"></canvas>
     <footer>
         <h4>by DarxyDev</h4>
