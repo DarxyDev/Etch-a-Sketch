@@ -2,6 +2,5 @@ TODO:
 -clean up formatting
 -could add title text to buttons
 -on clear canvas reset undo/redo buttons
--learn about canvas
--convert image to canvas image so you can download
 -possibly add animation options
+-canvas download is a bit blurry. maybe render at higher resolution and download scaled down image

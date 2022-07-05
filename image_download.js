@@ -63,7 +63,7 @@ function setDownloadSizeDropDown(){
             // else canvSizeMulti = i * SIZE_MULTI_STEP;
             canvSizeMulti = e.target.getAttribute('data-multi');
             imgSizeMain.innerText = item.innerText;
-            console.log(canvSizeMulti);
+            downloadLink.setAttribute('download', `image_${item.innerText}`);
         })
         imgSizeItemsCont.appendChild(item);
         i++;
