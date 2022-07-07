@@ -554,7 +554,7 @@ function redoAction() {
     if (undoArray.length <= 0) return;
     let action = popUndoAction();
     if (typeof (action[0]) == 'object') {
-        for (let i = action.length - 1; i >= 0; i--) { //faster than array.reverse().forEach()
+       for(let i = 0; i < action.length; i++){
             let element = action[i];
             let pixel = pixelElements[element[0]];
             pixel.style.backgroundColor = element[2];

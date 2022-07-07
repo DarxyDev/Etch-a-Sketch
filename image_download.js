@@ -64,7 +64,6 @@ function setDownloadSizeDropDown() {
         if (i == 4) item.click();
         imgSizeItemsCont.appendChild(item);
         i++;
-        console.log(imgSizeItemsCont);
     }
 }
 function initDownloadDropdown() {
