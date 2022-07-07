@@ -15,18 +15,7 @@ let lockedAspect = true;
 const DEFAULT_PIXEL_BG = '';//'#A5BECC';
 const MAX_SIZE = 100;
 const MIN_SIZE = 10;
-const DARKEN_AMOUNT = -10;
-const LIGHTEN_AMOUNT = 10;
-const UP = 'u';
-const DOWN = 'd';
-const LEFT = 'l';
-const RIGHT = 'r';
-//tool names
-const TOOL_DRAW = 'draw';
-const TOOL_FILL = 'fill';
-const TOOL_LIGHTEN = 'lighten';
-const TOOL_DARKEN = 'darken';
-const TOOL_BLEND = 'blend';
+
 //testing/user variables
 let currentTool = TOOL_DRAW;
 let pixelColor = '#000000';

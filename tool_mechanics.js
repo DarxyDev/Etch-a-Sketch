@@ -1,3 +1,16 @@
+const DARKEN_AMOUNT = -10;
+const LIGHTEN_AMOUNT = 10;
+const UP = 'u';
+const DOWN = 'd';
+const LEFT = 'l';
+const RIGHT = 'r';
+//tool names
+const TOOL_DRAW = 'draw';
+const TOOL_FILL = 'fill';
+const TOOL_LIGHTEN = 'lighten';
+const TOOL_DARKEN = 'darken';
+const TOOL_BLEND = 'blend';
+
 function pixelHover(e) {
     let target = e.target;
     if (e.type == 'touchmove') {
